@@ -39,3 +39,7 @@ rootfs/ubuntu-jammy/*
 !rootfs/ubuntu-jammy/.gitkeep
 work/*
 *.ext4
+
+# Generiertes Ubuntu-RootFS
+rootfs/*
+!rootfs/.gitkeep
