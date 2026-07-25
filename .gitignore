@@ -27,3 +27,15 @@ Desktop.ini
 # Python
 __pycache__/
 *.pyc
+
+# Generierte Ubuntu-Dateisysteme
+rootfs/ubuntu-jammy/*
+!rootfs/ubuntu-jammy/.gitkeep
+work/*
+*.ext4
+
+# Generierte Ubuntu-Dateisysteme
+rootfs/ubuntu-jammy/*
+!rootfs/ubuntu-jammy/.gitkeep
+work/*
+*.ext4
