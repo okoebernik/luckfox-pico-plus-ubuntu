@@ -1,0 +1,29 @@
+# SDK und große Quelldateien
+sdk/
+downloads/
+
+# Erzeugte Images und Build-Ausgaben
+output/*
+!output/.gitkeep
+*.img
+*.bin
+*.tar
+*.tar.gz
+*.zip
+
+# Temporäre Dateien
+*.log
+*.tmp
+*.swp
+*~
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# VS Code
+.vscode/
+
+# Python
+__pycache__/
+*.pyc
