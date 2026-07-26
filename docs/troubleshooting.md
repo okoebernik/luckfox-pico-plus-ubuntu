@@ -1,816 +1,940 @@
-# Troubleshooting Guide
+---
+title: Troubleshooting
+description: Complete diagnostic and recovery guide for Ubuntu 22.04 on the Luckfox Pico Plus.
+version: v0.1.0
+---
 
-> **Luckfox Pico Plus Ubuntu**\
-> Complete Engineering Handbook
+<p align="center">
 
-------------------------------------------------------------------------
+# Ubuntu 22.04 for Luckfox Pico Plus
 
-## Contents
+### Troubleshooting Guide
 
-1.  Part 1 -- Diagnostic Fundamentals
-2.  Part 2 -- Linux System Diagnostics
-3.  Part 3 -- Engineering Handbook
+<img src="images/luckfox-troubleshooting-overview.svg"
+     alt="Luckfox Ubuntu Troubleshooting Overview"
+     width="100%">
 
-------------------------------------------------------------------------
+</p>
 
-# Troubleshooting Guide --- Part 1
+> [!NOTE]
+> This guide consolidates the former troubleshooting Parts 1–3 into one engineering handbook. It follows a layered diagnostic method: identify the highest working layer, preserve evidence, apply one controlled change and verify the complete system afterward.
 
-> **Luckfox Pico Plus Ubuntu**
->
-> Engineering Handbook
+| Previous | Home | Next |
+|-----------|------|------|
+| [← Memory Optimization](memory-optimization.md) | [README](../README.md) | Development → |
 
-------------------------------------------------------------------------
+---
 
-# Table of Contents
+## Table of Contents
 
-1.  Introduction
-2.  Diagnostic Philosophy
-3.  Troubleshooting Workflow
-4.  Boot Architecture
-5.  Boot Problems
-6.  UART Diagnostics
-7.  Flash Problems
-8.  RootFS Recovery
-9.  Kernel Panic
-10. Recovery Basics
+- [Diagnostic Philosophy](#diagnostic-philosophy)
+- [Diagnostic Workflow](#diagnostic-workflow)
+- [Failure Layers](#failure-layers)
+- [Boot Problems](#boot-problems)
+- [UART Diagnostics](#uart-diagnostics)
+- [Flash Recovery](#flash-recovery)
+- [Kernel Panic Diagnosis](#kernel-panic-diagnosis)
+- [RootFS Recovery](#rootfs-recovery)
+- [systemd Diagnostics](#systemd-diagnostics)
+- [Memory and OOM Diagnostics](#memory-and-oom-diagnostics)
+- [Network Diagnostics](#network-diagnostics)
+- [SSH Troubleshooting](#ssh-troubleshooting)
+- [microSD Card Diagnostics](#microsd-card-diagnostics)
+- [Build Diagnostics](#build-diagnostics)
+- [Performance Diagnostics](#performance-diagnostics)
+- [Controlled Maintenance](#controlled-maintenance)
+- [GitHub Issue Workflow](#github-issue-workflow)
+- [Troubleshooting Matrix](#troubleshooting-matrix)
+- [Diagnostic Command Reference](#diagnostic-command-reference)
+- [Recovery Checklist](#recovery-checklist)
+- [Quick Reference](#quick-reference)
 
-------------------------------------------------------------------------
+---
 
-# 1. Introduction
+## Diagnostic Philosophy
 
-This guide provides a structured troubleshooting methodology for Ubuntu
-running on the Luckfox Pico Plus.
+Troubleshooting should follow the system stack instead of guessing.
 
-Unlike traditional "try this" troubleshooting, every chapter follows the
-same engineering process:
-
-1.  Observe
-2.  Collect Evidence
-3.  Identify the failing layer
-4.  Apply exactly one corrective action
-5.  Verify the result
-
-![](docs/images/luckfox-troubleshooting-overview.svg)
-
-------------------------------------------------------------------------
-
-# 2. Diagnostic Philosophy
-
-## Core Rule
-
-Always determine **the first component that fails**.
-
-Never start debugging SSH if Linux has not booted.
-
-Never repair a filesystem before confirming that the storage itself is
-healthy.
-
-Never reflash before preserving UART output.
-
-### Preserve Evidence
-
-Collect:
-
--   Complete UART log
--   Release version
--   SHA256 verification
--   Board model
--   Memory status
--   Storage status
-
-![](docs/images/luckfox-diagnostic-workflow.svg)
-
-------------------------------------------------------------------------
-
-# 3. Boot Architecture
-
-Boot sequence:
-
-``` text
+```text
 Power
- ↓
-BootROM
- ↓
-idblock.img
- ↓
+  ↓
+BootROM / idblock
+  ↓
 U-Boot
- ↓
-boot.img
- ↓
-Linux Kernel
- ↓
-RootFS
- ↓
-systemd
- ↓
-Login
+  ↓
+Linux kernel
+  ↓
+Root filesystem
+  ↓
+systemd / Ubuntu userspace
+  ↓
+Network
+  ↓
+SSH / applications
 ```
 
-Each layer depends on the previous one.
+Always identify:
 
-------------------------------------------------------------------------
+1. the highest layer that still works,
+2. the first layer that fails,
+3. the evidence that proves both conclusions.
 
-# 4. Boot Problems
+> [!IMPORTANT]
+> Do not debug SSH while the kernel or network layer is still unproven. Do not reflash before preserving the UART output.
+
+---
+
+## Diagnostic Workflow
+
+<p align="center">
+  <img src="images/luckfox-diagnostic-workflow.svg"
+       alt="Luckfox Ubuntu Diagnostic Workflow"
+       width="100%">
+</p>
+
+The recommended process is:
+
+1. Observe the exact symptom.
+2. Collect UART, kernel and service evidence.
+3. Identify the first failed layer.
+4. Select one plausible cause.
+5. Apply one controlled fix.
+6. Reboot and verify every dependent layer.
+7. Document the root cause and result.
+
+Minimum evidence before a destructive recovery step:
+
+```bash
+uname -a
+cat /etc/os-release
+free -h
+swapon --show
+ip address
+ip route
+lsblk -f
+df -h
+sudo systemctl --failed
+sudo journalctl -b --no-pager
+dmesg
+```
+
+---
+
+## Failure Layers
+
+| Symptom | Highest proven layer | Likely failing layer |
+|---------|----------------------|----------------------|
+| No LEDs or current draw | None | Power or hardware |
+| LEDs but no UART output | Hardware partially proven | UART, BootROM or boot media |
+| U-Boot banner visible | BootROM and bootloader entry proven | Boot image or environment |
+| `Starting kernel ...` visible | U-Boot proven | Kernel, Device Tree or RootFS |
+| Ubuntu login prompt visible | Kernel, RootFS and systemd proven | Network, SSH or account |
+| Ping works but port 22 is closed | Network proven | SSH service |
+| Password accepted, session closes | SSH authentication partially proven | PAM, shell or OOM |
+| Filesystem becomes read-only | Kernel and storage detection proven | Filesystem or microSD media |
+
+---
+
+## Boot Problems
+
+<p align="center">
+  <img src="images/luckfox-boot-decision-tree.svg"
+       alt="Luckfox Ubuntu Boot Decision Tree"
+       width="100%">
+</p>
 
 Typical symptoms:
 
--   No LEDs
--   No UART output
--   Boot loop
--   Stops at U-Boot
--   Stops at "Starting kernel..."
--   Kernel panic
--   Login prompt never appears
+- no LEDs,
+- no serial output,
+- board stops in U-Boot,
+- board stops after `Starting kernel ...`,
+- kernel panic,
+- no login prompt,
+- repeated reboot loop.
 
-Follow the decision tree before changing configuration.
+### Initial checks
 
-![](docs/images/luckfox-boot-decision-tree.svg)
+- verify the USB-C power supply and cable,
+- insert the correct microSD card,
+- open UART before applying power,
+- use UART2 at `115200 8N1`,
+- verify the release checksums,
+- retain the complete boot log.
 
-Checklist:
+### Expected milestones
 
--   Verify power supply
--   Verify UART wiring
--   Verify image versions
--   Verify SHA256SUMS
--   Capture UART log
+```text
+U-Boot 2017...
+Starting kernel ...
+Ubuntu 22.04 LTS luckfox ttyFIQ0
+luckfox login:
+```
 
-------------------------------------------------------------------------
+The first missing milestone indicates the diagnostic layer.
 
-# 5. UART Diagnostics
+---
 
-UART is the primary diagnostic interface.
+## UART Diagnostics
 
-Configuration:
+UART is the primary recovery and diagnostic interface.
 
--   115200 Baud
--   8 Data Bits
--   No Parity
--   1 Stop Bit
+Use:
 
-Expected milestones:
+```text
+Baud rate: 115200
+Data bits: 8
+Parity: None
+Stop bits: 1
+Flow control: None
+```
 
--   BootROM
--   U-Boot banner
--   Linux Kernel
--   systemd
--   Login
+Recommended wiring:
 
-Missing output indicates the layer immediately before it failed.
+| USB-to-TTL adapter | Luckfox Pico Plus |
+|--------------------|-------------------|
+| `GND` | `GND` |
+| `RXD` | `UART2_TX` |
+| `TXD` | `UART2_RX` |
 
-------------------------------------------------------------------------
+> [!WARNING]
+> Use 3.3 V TTL logic. Do not connect the adapter power output to the board.
 
-# 6. Flash Problems
+If no output appears:
+
+- verify RX and TX are crossed,
+- verify common ground,
+- confirm the correct UART,
+- try another adapter and USB port,
+- open the terminal before power-on,
+- test the adapter loopback separately.
+
+---
+
+## Flash Recovery
+
+<p align="center">
+  <img src="images/luckfox-flash-recovery.svg"
+       alt="Luckfox Ubuntu Flash Recovery Workflow"
+       width="100%">
+</p>
 
 Common causes:
 
--   Wrong release
--   Missing image
--   Corrupted SD card
--   Interrupted write
--   Invalid SHA256
+- wrong release directory selected,
+- Buildroot `update.img` used by mistake,
+- missing `env.img` or `userdata.img`,
+- incomplete SocToolKit write,
+- wrong target SD card,
+- damaged or counterfeit microSD card.
 
-Recovery order:
+### Verify the release
 
-1.  Verify release directory
-2.  Verify checksums
-3.  Rewrite SD card
-4.  Capture UART
+```bash
+cd output/release
+sha256sum -c SHA256SUMS
+```
 
-![](docs/images/luckfox-flash-recovery.svg)
+Required core files:
 
-------------------------------------------------------------------------
+```text
+download.bin
+idblock.img
+uboot.img
+env.img
+boot.img
+userdata.img
+rootfs.img
+SHA256SUMS
+```
 
-# 7. RootFS Recovery
+Recovery sequence:
 
-Typical symptoms:
+1. verify all release files,
+2. verify SHA-256 checksums,
+3. select the complete `output/release/` directory,
+4. recreate the SD card,
+5. boot with UART connected,
+6. confirm each milestone.
 
--   Kernel panic
--   Read-only filesystem
--   ext4 errors
+---
 
-Procedure:
+## Kernel Panic Diagnosis
 
-``` bash
+<p align="center">
+  <img src="images/luckfox-kernel-panic-diagnosis.svg"
+       alt="Luckfox Ubuntu Kernel Panic Diagnosis"
+       width="100%">
+</p>
+
+Typical panic messages:
+
+```text
+Kernel panic - not syncing
+Unable to mount root fs
+VFS: Cannot open root device
+```
+
+Potential causes:
+
+- wrong or damaged `boot.img`,
+- Device Tree mismatch,
+- wrong `root=` kernel parameter,
+- damaged RootFS,
+- kernel and module mismatch.
+
+### Useful evidence
+
+```bash
+cat /proc/cmdline
+uname -a
 lsblk -f
 findmnt /
-df -h
-dmesg | grep -Ei "ext4|mmc|i/o"
+dmesg | tail -n 150
 ```
 
-Only run `fsck.ext4` on an **unmounted** filesystem.
+When diagnosing from the build host:
 
-![](docs/images/luckfox-rootfs-recovery.svg)
-
-------------------------------------------------------------------------
-
-# 8. Kernel Panic
-
-Kernel panics should always be analyzed from the **first error**, not
-the final line.
-
-Typical causes:
-
--   Wrong Device Tree
--   Invalid root=
--   Corrupted RootFS
--   Incompatible kernel
-
-Useful commands:
-
-``` bash
-cat /proc/cmdline
+```bash
+cd output/release
 sha256sum -c SHA256SUMS
+```
+
+> [!TIP]
+> The actual cause often appears several lines before the final panic message. Preserve the complete UART output.
+
+---
+
+## RootFS Recovery
+
+<p align="center">
+  <img src="images/luckfox-rootfs-recovery.svg"
+       alt="Luckfox Ubuntu RootFS Recovery"
+       width="100%">
+</p>
+
+Symptoms:
+
+- root mount panic,
+- ext4 journal errors,
+- read-only root filesystem,
+- systemd cannot start required services,
+- login prompt never appears.
+
+### Running-system checks
+
+```bash
 lsblk -f
+findmnt /
+df -h /
+findmnt -no SOURCE,OPTIONS /
+dmesg | grep -i -E 'ext4|mmc|i/o|read-only'
 ```
 
-![](docs/images/luckfox-kernel-panic-diagnosis.svg)
+### Offline filesystem check
 
-------------------------------------------------------------------------
+Do not run filesystem repair against the mounted root filesystem.
 
-# 9. Recovery Basics
+From another Linux system:
 
-Always work in this order:
-
-1.  Preserve logs
-2.  Verify images
-3.  Verify storage
-4.  Apply one change
-5.  Reboot
-6.  Compare results
-
-------------------------------------------------------------------------
-
-# Quick Reference
-
-![](docs/images/luckfox-troubleshooting-quick-reference.svg)
-
-## Next Part
-
-Part 2 covers:
-
--   systemd
--   Memory
--   Swap
--   OOM Killer
--   Network
--   SSH
--   Storage
--   Performance
--   Maintenance
-
-------------------------------------------------------------------------
-
-# Troubleshooting Guide --- Part 2
-
-> **Luckfox Pico Plus Ubuntu**\
-> Linux System Diagnostics
-
-------------------------------------------------------------------------
-
-# Table of Contents
-
-1.  systemd Diagnostics
-2.  Memory Management
-3.  Swap Configuration
-4.  OOM Killer
-5.  Network Diagnostics
-6.  SSH Troubleshooting
-7.  Storage Diagnostics
-8.  Performance Analysis
-9.  Maintenance Procedures
-10. Operational Checklist
-
-------------------------------------------------------------------------
-
-# 1. systemd Diagnostics
-
-The majority of userspace problems can be traced back to one or more
-failed systemd units.
-
-![](docs/images/luckfox-systemd-diagnostics.svg)
-
-## First checks
-
-``` bash
-systemctl --failed
-systemctl status <service>
-journalctl -u <service> -b
+```bash
+sudo fsck.ext4 -f /dev/<rootfs-partition>
 ```
 
-Look for:
+If errors return after a clean repair and reflash, replace the microSD card.
 
--   Failed dependencies
--   Missing mount points
--   Permission problems
--   Configuration errors
--   Out-of-memory events
+### Root filesystem expansion
 
-Engineering note:
+```bash
+sudo resize2fs /dev/mmcblk1p6
+df -h /
+```
 
-> Always investigate the **first failed service**. Later failures are
-> often only consequences.
+Confirm the device before running the command:
 
-------------------------------------------------------------------------
+```bash
+findmnt /
+```
 
-# 2. Memory Management
+---
 
-Ubuntu on the Luckfox Pico Plus has limited RAM. Efficient memory usage
-is essential.
+## systemd Diagnostics
 
-![](docs/images/luckfox-memory-oom-diagnostics.svg)
+<p align="center">
+  <img src="images/luckfox-systemd-diagnostics.svg"
+       alt="Luckfox Ubuntu systemd Diagnostic Workflow"
+       width="100%">
+</p>
 
-Useful commands:
+### Failed units
 
-``` bash
+```bash
+sudo systemctl --failed
+```
+
+### Service status
+
+```bash
+sudo systemctl status <unit> --no-pager
+```
+
+### Current-boot logs
+
+```bash
+sudo journalctl -u <unit> -b --no-pager
+sudo journalctl -b --no-pager
+```
+
+### Dependencies
+
+```bash
+systemctl list-dependencies <unit>
+```
+
+### Timers and enabled services
+
+```bash
+sudo systemctl list-timers --all
+sudo systemctl list-unit-files --state=enabled
+```
+
+A failed service can be a consequence of:
+
+- missing storage,
+- unavailable networking,
+- invalid configuration,
+- insufficient memory,
+- failed dependency,
+- incorrect permissions.
+
+### `/run/systemd` safety warning
+
+On this low-memory system, systemd can report:
+
+```text
+Refusing to reload, not enough space available on /run/systemd.
+```
+
+Persistent unit symlink changes may still exist. Verify them and perform a controlled reboot.
+
+---
+
+## Memory and OOM Diagnostics
+
+<p align="center">
+  <img src="images/luckfox-memory-oom-diagnostics.svg"
+       alt="Luckfox Ubuntu Memory and OOM Diagnostics"
+       width="100%">
+</p>
+
+Real OOM symptom observed during development:
+
+```text
+Out of memory: Killed process 306 (login)
+```
+
+### Core checks
+
+```bash
 free -h
-vmstat 1
-cat /proc/meminfo
-```
-
-Monitor:
-
--   Available memory
--   Cached memory
--   Swap usage
--   Page faults
-
-Warning signs:
-
--   Constant swapping
--   Services restarting
--   SSH disconnects
--   Slow package installation
-
-------------------------------------------------------------------------
-
-# 3. Swap Configuration
-
-Verify swap:
-
-``` bash
 swapon --show
-free -h
+ps aux --sort=-rss | head -15
+vmstat 1
+dmesg | grep -i -E 'oom|out of memory|killed process'
 ```
 
-Expected result:
+Expected swap size:
 
--   Swap device active
--   Approximately 512 MiB (depending on release)
--   Automatically enabled after boot
+```text
+approximately 512 MiB
+```
 
 If swap is missing:
 
--   Check `/etc/fstab`
--   Verify swapfile existence
--   Enable manually:
-
-``` bash
-sudo swapon -a
+```bash
+grep '^/swapfile ' /etc/fstab
+ls -lh /swapfile
+sudo swapon /swapfile
+swapon --show
 ```
 
-------------------------------------------------------------------------
+Common triggers:
 
-# 4. OOM Killer
+- login before swap activation,
+- `apt` or `dpkg`,
+- large Python imports,
+- several simultaneous services,
+- automated maintenance jobs,
+- memory leak,
+- repeated SSH sessions.
 
-The Linux Out-Of-Memory Killer terminates processes when RAM is
-exhausted.
+Recovery:
 
-Diagnosis:
+1. preserve the OOM log,
+2. verify swap,
+3. identify the largest RSS consumers,
+4. stop one nonessential service,
+5. retry one workload,
+6. confirm that no new OOM event occurs.
 
-``` bash
-dmesg | grep -Ei "oom|killed"
-journalctl -k
-```
+---
 
-Typical victims:
+## Network Diagnostics
 
--   sshd child processes
--   apt
--   Python applications
--   Build processes
+<p align="center">
+  <img src="images/luckfox-network-diagnostics.svg"
+       alt="Luckfox Ubuntu Network Diagnostic Path"
+       width="100%">
+</p>
 
-Recovery strategy:
+Troubleshoot separately:
 
-1.  Enable swap
-2.  Stop unnecessary services
-3.  Retry workload
-4.  Verify stability
+1. physical link,
+2. IP address,
+3. default route,
+4. DNS,
+5. target service.
 
-------------------------------------------------------------------------
+### Board-side commands
 
-# 5. Network Diagnostics
-
-![](docs/images/luckfox-network-diagnostics.svg)
-
-Basic workflow:
-
-``` bash
+```bash
+ip -br link
 ip -br address
 ip route
-ping <gateway>
-ping 8.8.8.8
+getent hosts archive.ubuntu.com
+ss -ltn
+```
+
+### Connectivity tests
+
+```bash
+ping -c 4 <gateway-ip>
+ping -c 4 8.8.8.8
 getent hosts github.com
 ```
 
-Troubleshoot in layers:
+Interpretation:
 
-1.  Physical link
-2.  IP address
-3.  Default route
-4.  DNS
-5.  Remote service
+| Result | Meaning |
+|--------|---------|
+| Interface down | link, cable, switch or driver |
+| Link up, no address | DHCP or interface configuration |
+| Address present, no default route | routing issue |
+| Gateway reachable, DNS fails | resolver issue |
+| Ping works, port 22 closed | SSH daemon not listening |
 
-Never assume DNS is working simply because an IP address exists.
+---
 
-------------------------------------------------------------------------
+## SSH Troubleshooting
 
-# 6. SSH Troubleshooting
+<p align="center">
+  <img src="images/luckfox-ssh-troubleshooting.svg"
+       alt="Luckfox Ubuntu SSH Troubleshooting"
+       width="100%">
+</p>
 
-![](docs/images/luckfox-ssh-troubleshooting.svg)
+### Remote tests
 
-Useful commands:
-
-``` bash
-ss -ltn
-systemctl status ssh
-journalctl -u ssh -b
-ssh -vvv user@board
+```bash
+ping <board-ip>
+nc -vz <board-ip> 22
+ssh -vvv pico@<board-ip>
 ```
 
-Common causes:
+### Local board checks
 
--   SSH service stopped
--   Firewall rules
--   Wrong credentials
--   PAM configuration
--   Memory pressure
+```bash
+ss -ltn | grep ':22'
+sudo systemctl status ssh --no-pager
+sudo journalctl -u ssh -b --no-pager
+```
 
-------------------------------------------------------------------------
+Common cases:
 
-# 7. Storage Diagnostics
+| Symptom | Likely cause |
+|---------|--------------|
+| Timeout | link, IP or route |
+| Connection refused | SSH service not listening |
+| Permission denied | password, key or account |
+| Password accepted, connection closes | PAM, shell or OOM |
+| Intermittent disconnects | memory or storage pressure |
 
-![](docs/images/luckfox-sd-card-diagnostics.svg)
+If the session closes after authentication:
 
-Verify storage:
+```bash
+free -h
+swapon --show
+dmesg | grep -i -E 'oom|killed process'
+```
 
-``` bash
+---
+
+## microSD Card Diagnostics
+
+<p align="center">
+  <img src="images/luckfox-sd-card-diagnostics.svg"
+       alt="Luckfox Ubuntu microSD Card Diagnostics"
+       width="100%">
+</p>
+
+### Inspect layout and mounts
+
+```bash
 lsblk -f
-findmnt /
+blkid
+findmnt
 df -h
 df -i
 ```
 
-Kernel log:
+### Search for storage errors
 
-``` bash
-dmesg | grep -Ei "mmc|ext4|i/o"
+```bash
+dmesg | grep -i -E 'mmc|ext4|i/o error|read-only|buffer'
 ```
 
-Repeated I/O errors usually indicate failing media.
+Replacement indicators:
 
-------------------------------------------------------------------------
+- repeated filesystem corruption,
+- new I/O errors after a clean flash,
+- unexpected capacity,
+- poor or unstable write speed,
+- permanent read-only state.
 
-# 8. Performance Analysis
+> [!IMPORTANT]
+> `fsck` can repair filesystem metadata. It cannot repair failing flash memory.
 
-Measure system load:
+---
 
-``` bash
+## Build Diagnostics
+
+<p align="center">
+  <img src="images/luckfox-build-diagnostics.svg"
+       alt="Luckfox Ubuntu Build Diagnostics"
+       width="100%">
+</p>
+
+### Host checks
+
+```bash
+cat /etc/os-release
+date
+timedatectl status
+printf '%s\n' "$PATH"
+df -h .
+```
+
+### Repository checks
+
+```bash
+git status
+git log --oneline --decorate -5
+git submodule status
+```
+
+### Script permissions
+
+```bash
+find scripts -maxdepth 1 -type f -name '*.sh' -printf '%M %p\n'
+chmod +x scripts/*.sh
+```
+
+### Release checks
+
+```bash
+find output/release -maxdepth 1 -type f -printf '%f\n' | sort
+cd output/release
+sha256sum -c SHA256SUMS
+```
+
+Common build causes:
+
+- Windows directories in WSL `PATH`,
+- incorrect WSL clock,
+- incomplete SDK checkout,
+- wrong board configuration,
+- missing executable bit,
+- insufficient disk space,
+- missing intermediate image,
+- stale or partially patched source tree.
+
+> [!TIP]
+> Diagnose the first error in the build log. Later errors are often cascading consequences.
+
+---
+
+## Performance Diagnostics
+
+Performance problems on this board are frequently memory or storage problems.
+
+```bash
 uptime
 top
+free -h
+swapon --show
 vmstat 1
-iostat
+ps aux --sort=-rss | head -20
 ```
 
-Look for:
+Important `vmstat` columns:
 
--   CPU saturation
--   High I/O wait
--   Swap activity
--   Large resident processes
+| Column | Meaning |
+|--------|---------|
+| `r` | Runnable processes |
+| `b` | Tasks blocked on I/O |
+| `si` | Swap read into RAM |
+| `so` | RAM written to swap |
+| `wa` | CPU time waiting for I/O |
 
-Performance tuning should always be based on measurements---not
-assumptions.
+Signs of an unsuitable workload:
 
-------------------------------------------------------------------------
+- continuous swap-in and swap-out,
+- steadily increasing swap usage,
+- high I/O wait,
+- unresponsive SSH,
+- repeated OOM events,
+- essential services failing during application startup.
 
-# 9. Maintenance Procedures
+---
 
-![](docs/images/luckfox-maintenance-workflow.svg)
+## Controlled Maintenance
 
-Recommended workflow:
+<p align="center">
+  <img src="images/luckfox-maintenance-workflow.svg"
+       alt="Luckfox Ubuntu Controlled Maintenance Workflow"
+       width="100%">
+</p>
 
-1.  Backup
-2.  Record baseline
-3.  Apply one change
-4.  Reboot with UART connected
-5.  Verify all services
-6.  Document results
+Recommended sequence:
 
-Avoid combining multiple major changes in a single maintenance window.
+1. back up configuration and data,
+2. record a baseline,
+3. apply one logical change,
+4. reboot with UART attached,
+5. repeat the baseline checks,
+6. roll back if essential behavior changes.
 
-------------------------------------------------------------------------
+Baseline:
 
-# 10. Operational Checklist
+```bash
+uname -a
+free -h
+swapon --show
+df -h
+ip address
+sudo systemctl --failed
+ps aux --sort=-rss | head -15
+```
 
-Before considering a system healthy verify:
+Avoid combining:
 
--   [ ] No failed systemd services
--   [ ] Swap active
--   [ ] No OOM events
--   [ ] Network operational
--   [ ] SSH stable
--   [ ] Storage healthy
--   [ ] UART boot without errors
+- major package update,
+- kernel replacement,
+- filesystem migration,
+- service reconfiguration,
 
-------------------------------------------------------------------------
+in one maintenance step.
 
-# Next Part
+---
 
-Part 3 completes the handbook with:
+## GitHub Issue Workflow
 
--   Build Diagnostics
--   Release Verification
--   GitHub Issue Workflow
--   Recovery Checklists
--   Troubleshooting Matrix
--   Engineering Best Practices
--   Complete Command Reference
+<p align="center">
+  <img src="images/luckfox-github-issue-workflow.svg"
+       alt="Luckfox Ubuntu GitHub Issue Workflow"
+       width="100%">
+</p>
 
-------------------------------------------------------------------------
+A useful issue includes:
 
-# Troubleshooting Guide --- Part 3
+- exact board model,
+- project version,
+- Git commit,
+- build-host information,
+- microSD brand and capacity,
+- exact reproduction steps,
+- expected and actual results,
+- complete UART log,
+- diagnostic command output,
+- changes made after flashing.
 
-> **Luckfox Pico Plus Ubuntu**\
-> Engineering Handbook & Best Practices
+Suggested format:
 
-------------------------------------------------------------------------
+```markdown
+## Environment
 
-# Table of Contents
+- Board:
+- Project version:
+- Git commit:
+- Build host:
+- SD card:
 
-1.  Build Diagnostics
-2.  Release Verification
-3.  GitHub Issue Workflow
-4.  Engineering Best Practices
-5.  Recovery Checklist
-6.  Troubleshooting Matrix
-7.  Command Reference
-8.  Appendix
+## Problem
 
-------------------------------------------------------------------------
+Describe the exact symptom.
 
-# 1. Build Diagnostics
+## Steps to Reproduce
 
-Build failures are usually caused by environment inconsistencies rather
-than source code defects.
+1.
+2.
+3.
 
-![](docs/images/luckfox-build-diagnostics.svg)
+## Expected Result
 
-## Verify the build host
+...
 
-``` bash
+## Actual Result
+
+...
+
+## Logs
+
+Attach UART, dmesg, journal and diagnostic output.
+```
+
+Review logs before sharing and remove:
+
+- passwords,
+- private keys,
+- tokens,
+- sensitive internal addresses,
+- confidential hostnames.
+
+---
+
+## Troubleshooting Matrix
+
+| Symptom | Likely layer | First action |
+|---------|--------------|--------------|
+| No LEDs | Power | Verify supply and cable |
+| No UART | Hardware / BootROM | Verify UART2 wiring |
+| U-Boot only | Boot image | Verify `boot.img` |
+| Kernel panic | Kernel / RootFS | Capture panic and inspect `root=` |
+| No login prompt | RootFS / systemd / OOM | Check UART and swap |
+| SSH timeout | Network | Verify IP and route |
+| SSH refused | SSH daemon | Check port 22 and service |
+| SSH closes after password | PAM / shell / OOM | Check journal and OOM log |
+| Root filesystem read-only | Filesystem / SD card | Preserve logs and inspect ext4 |
+| `apt` killed | Memory | Verify swap and stop services |
+| Missing release image | Build pipeline | Inspect first failed build stage |
+| Repeated corruption | microSD media | Replace card |
+
+---
+
+## Diagnostic Command Reference
+
+### System identity
+
+```bash
+uname -a
 cat /etc/os-release
-df -h .
-date
-git status
+cat /proc/version
+cat /proc/cmdline
 ```
 
-## Verify release artifacts
+### Memory
 
-``` bash
+```bash
+free -h
+swapon --show
+cat /proc/meminfo
+vmstat 1
+ps aux --sort=-rss | head -20
+```
+
+### Services
+
+```bash
+sudo systemctl --failed
+sudo systemctl status <unit> --no-pager
+sudo journalctl -u <unit> -b --no-pager
+sudo journalctl -b --no-pager
+```
+
+### Network
+
+```bash
+ip -br link
+ip -br address
+ip route
+ss -ltn
+getent hosts <hostname>
+```
+
+### Storage
+
+```bash
+lsblk -f
+blkid
+findmnt
+df -h
+df -i
+```
+
+### Kernel evidence
+
+```bash
+dmesg
+dmesg | grep -i -E 'error|fail|warn|oom|killed|ext4|mmc|i/o'
+```
+
+### Build and release
+
+```bash
+git status
+git log --oneline -5
 find output/release -maxdepth 1 -type f
 sha256sum -c output/release/SHA256SUMS
 ```
 
-Engineering rule:
-
--   Investigate the **first** build error.
--   Ignore cascading errors until the root cause is resolved.
-
-------------------------------------------------------------------------
-
-# 2. Release Verification
-
-Before flashing, verify:
-
-  Item      Check
-  --------- --------------------
-  Board     Correct target
-  Release   Expected version
-  SHA256    All files verified
-  Images    Complete
-  SD Card   Healthy
-
-Mandatory files:
-
--   download.bin
--   idblock.img
--   uboot.img
--   env.img
--   boot.img
--   userdata.img
--   rootfs.img
-
-Never flash a release with missing images.
-
-------------------------------------------------------------------------
-
-# 3. GitHub Issue Workflow
-
-![](docs/images/luckfox-github-issue-workflow.svg)
-
-A useful issue contains:
-
-## Environment
-
--   Board revision
--   Ubuntu release
--   Repository version
--   Commit hash
-
-## Reproduction
-
--   Exact steps
--   Expected result
--   Actual result
-
-## Diagnostics
-
-Attach:
-
--   UART log
--   dmesg
--   journalctl -b
--   free -h
--   swapon --show
--   lsblk -f
-
-Logs should be attached as **text**, not screenshots.
-
-------------------------------------------------------------------------
-
-# 4. Engineering Best Practices
-
-## One Change Rule
-
-Only modify **one variable at a time**.
-
-Bad:
-
--   Update packages
--   Replace kernel
--   Change configuration
--   Enable new service
-
-all at once.
-
-Good:
-
-1.  Apply one change
-2.  Reboot
-3.  Test
-4.  Document
-5.  Continue
-
-------------------------------------------------------------------------
-
-## Preserve Evidence
-
-Before rebooting:
-
--   Save UART log
--   Save journal
--   Save dmesg
--   Save configuration
-
-------------------------------------------------------------------------
-
-## Recovery Strategy
-
-Preferred order:
-
-1.  Observe
-2.  Collect
-3.  Diagnose
-4.  Repair
-5.  Verify
-
-Avoid unnecessary reflashing.
-
-------------------------------------------------------------------------
-
-# 5. Recovery Checklist
-
-Before declaring recovery successful verify:
-
--   [ ] Boot without UART errors
--   [ ] Login prompt available
--   [ ] Swap enabled
--   [ ] No failed systemd units
--   [ ] No kernel panic
--   [ ] No ext4 errors
--   [ ] Network operational
--   [ ] SSH stable
--   [ ] Storage healthy
-
-------------------------------------------------------------------------
-
-# 6. Troubleshooting Matrix
-
-  Symptom                Likely Layer        First Action
-  ---------------------- ------------------- ----------------------------
-  No LEDs                Power               Verify supply
-  No UART                BootROM             Verify serial wiring
-  Stops at U-Boot        Bootloader          Verify images
-  Kernel panic           Kernel              Inspect cmdline and RootFS
-  Login missing          systemd             Check failed units
-  SSH disconnects        Memory              Verify swap and OOM
-  Read-only filesystem   Storage             Inspect ext4 and SD card
-  Random crashes         Hardware / Memory   Review UART and dmesg
-
-------------------------------------------------------------------------
-
-# 7. Command Reference
-
-## Boot
-
-``` bash
-cat /proc/cmdline
-lsblk -f
-findmnt /
-```
-
-## Memory
-
-``` bash
-free -h
-swapon --show
-vmstat 1
-```
-
-## Services
-
-``` bash
-systemctl --failed
-systemctl status ssh
-journalctl -b
-```
-
-## Network
-
-``` bash
-ip -br address
-ip route
-ss -ltn
-```
-
-## Storage
-
-``` bash
-df -h
-df -i
-dmesg | grep -Ei "mmc|ext4|i/o"
-```
-
-------------------------------------------------------------------------
-
-# 8. Appendix
-
-## Recommended Diagnostic Bundle
-
-Collect the following before opening an issue:
-
--   Complete UART boot log
--   dmesg output
--   journalctl -b
--   free -h
--   swapon --show
--   lsblk -f
--   SHA256 verification
--   Git commit hash
--   Ubuntu release
--   Board revision
-
-------------------------------------------------------------------------
-
-# Final Engineering Rules
-
-1.  Preserve evidence before changing anything.
-2.  Change only one variable at a time.
-3.  Verify every release before flashing.
-4.  Use UART as the primary diagnostic interface.
-5.  Prefer root-cause analysis over repeated reflashing.
-6.  Document successful recoveries for future reference.
-
-------------------------------------------------------------------------
-
-# What's Next?
-
-Merge **Part 1**, **Part 2**, and **Part 3** into a single comprehensive
-`troubleshooting.md` with:
-
--   Unified table of contents
--   Cross-references
--   Embedded SVGs
--   Consistent callout boxes
--   Shared navigation
--   Professional formatting matching the rest of the documentation
+---
+
+## Recovery Checklist
+
+Before declaring recovery successful:
+
+- [ ] Complete UART boot has no unexplained fatal errors
+- [ ] Ubuntu login prompt appears
+- [ ] Ubuntu 22.04 and Linux 5.10.160 are confirmed
+- [ ] Swap is active
+- [ ] No new OOM events are present
+- [ ] No unexpected failed systemd units remain
+- [ ] Root filesystem is writable
+- [ ] No new ext4 or MMC errors appear
+- [ ] DHCP address and default route are present
+- [ ] SSH login remains stable
+- [ ] A clean reboot has been tested
+- [ ] Root cause and corrective action are documented
+
+---
+
+## Quick Reference
+
+<p align="center">
+  <img src="images/luckfox-troubleshooting-quick-reference.svg"
+       alt="Luckfox Ubuntu Troubleshooting Quick Reference"
+       width="100%">
+</p>
+
+---
+
+## Engineering Rules
+
+1. Preserve evidence before rebooting or reflashing.
+2. Diagnose from the lowest unproven layer upward.
+3. Change one variable at a time.
+4. Verify every release before flashing.
+5. Keep UART connected during recovery.
+6. Treat repeated storage errors as a media problem.
+7. Confirm swap before troubleshooting login instability.
+8. Validate every fix after a clean reboot.
+9. Keep known-good release artifacts and a spare SD card.
+10. Document successful recoveries for future reference.
+
+---
+
+## Continue Reading
+
+| Previous | Home | Next |
+|-----------|------|------|
+| [← Memory Optimization](memory-optimization.md) | [README](../README.md) | Development → |
