@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1300" height="720" viewBox="0 0 1300 720" role="img">
+
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#f8fafc"/>
+    <stop offset="100%" stop-color="#eef2f7"/>
+  </linearGradient>
+  <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+    <feDropShadow dx="0" dy="7" stdDeviation="9" flood-color="#0f172a" flood-opacity="0.14"/>
+  </filter>
+  <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+    <path d="M0,0 L12,6 L0,12 Z" fill="#64748b"/>
+  </marker>
+  <style>
+    .title { font: 700 36px Inter, Segoe UI, Arial, sans-serif; fill: #0f172a; }
+    .subtitle { font: 400 17px Inter, Segoe UI, Arial, sans-serif; fill: #475569; }
+    .box-title { font: 700 20px Inter, Segoe UI, Arial, sans-serif; fill: #ffffff; }
+    .box-sub { font: 400 13px Inter, Segoe UI, Arial, sans-serif; fill: rgba(255,255,255,.92); }
+    .label { font: 700 15px Inter, Segoe UI, Arial, sans-serif; fill: #0f172a; }
+    .note { font: 500 13px Inter, Segoe UI, Arial, sans-serif; fill: #64748b; }
+    .mono { font: 600 13px ui-monospace, SFMono-Regular, Consolas, monospace; fill: #334155; }
+    .connector { fill: none; stroke: #64748b; stroke-width: 4; stroke-linecap: round; marker-end: url(#arrow); }
+  </style>
+</defs>
+
+<defs>
+ <linearGradient id="root" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#0f172a"/><stop offset="100%" stop-color="#020617"/></linearGradient>
+ <linearGradient id="src" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#2563eb"/><stop offset="100%" stop-color="#1d4ed8"/></linearGradient>
+ <linearGradient id="docs" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#7c3aed"/><stop offset="100%" stop-color="#6d28d9"/></linearGradient>
+ <linearGradient id="generated" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#059669"/><stop offset="100%" stop-color="#047857"/></linearGradient>
+</defs>
+<rect width="1300" height="720" rx="30" fill="url(#bg)"/>
+<text x="650" y="58" text-anchor="middle" class="title">Repository Structure</text>
+<text x="650" y="88" text-anchor="middle" class="subtitle">Versioned source, generated assets and documentation are kept clearly separated</text>
+
+<g filter="url(#shadow)">
+ <rect x="410" y="125" width="480" height="85" rx="22" fill="url(#root)"/>
+ <text x="650" y="165" text-anchor="middle" class="box-title">luckfox-pico-plus-ubuntu/</text>
+ <text x="650" y="191" text-anchor="middle" class="box-sub">Project root</text>
+</g>
+
+<g filter="url(#shadow)">
+ <rect x="70" y="280" width="250" height="115" rx="22" fill="url(#src)"/>
+ <text x="195" y="320" text-anchor="middle" class="box-title">config/</text>
+ <text x="195" y="348" text-anchor="middle" class="box-sub">Project settings</text>
+ <text x="195" y="372" text-anchor="middle" class="box-sub">Image sizes and defaults</text>
+
+ <rect x="365" y="280" width="250" height="115" rx="22" fill="url(#src)"/>
+ <text x="490" y="320" text-anchor="middle" class="box-title">scripts/</text>
+ <text x="490" y="348" text-anchor="middle" class="box-sub">Build automation</text>
+ <text x="490" y="372" text-anchor="middle" class="box-sub">Reproducible pipeline</text>
+
+ <rect x="660" y="280" width="250" height="115" rx="22" fill="url(#docs)"/>
+ <text x="785" y="320" text-anchor="middle" class="box-title">docs/</text>
+ <text x="785" y="348" text-anchor="middle" class="box-sub">Guides and SVG diagrams</text>
+ <text x="785" y="372" text-anchor="middle" class="box-sub">Engineering handbook</text>
+
+ <rect x="955" y="280" width="250" height="115" rx="22" fill="url(#src)"/>
+ <text x="1080" y="320" text-anchor="middle" class="box-title">sdk/</text>
+ <text x="1080" y="348" text-anchor="middle" class="box-sub">Official Luckfox SDK</text>
+ <text x="1080" y="372" text-anchor="middle" class="box-sub">Vendor BSP and tools</text>
+</g>
+
+<path d="M650 210 V245 H195 V280" class="connector"/>
+<path d="M650 210 V245 H490 V280" class="connector"/>
+<path d="M650 210 V245 H785 V280" class="connector"/>
+<path d="M650 210 V245 H1080 V280" class="connector"/>
+
+<g filter="url(#shadow)">
+ <rect x="195" y="485" width="280" height="125" rx="22" fill="url(#generated)"/>
+ <text x="335" y="527" text-anchor="middle" class="box-title">rootfs/</text>
+ <text x="335" y="555" text-anchor="middle" class="box-sub">Generated Ubuntu filesystem</text>
+ <text x="335" y="580" text-anchor="middle" class="box-sub">Not stored in Git</text>
+
+ <rect x="510" y="485" width="280" height="125" rx="22" fill="url(#generated)"/>
+ <text x="650" y="527" text-anchor="middle" class="box-title">output/</text>
+ <text x="650" y="555" text-anchor="middle" class="box-sub">Images, logs and releases</text>
+ <text x="650" y="580" text-anchor="middle" class="box-sub">Generated artifacts</text>
+
+ <rect x="825" y="485" width="280" height="125" rx="22" fill="#475569"/>
+ <text x="965" y="527" text-anchor="middle" class="box-title">VERSION · README · LICENSE</text>
+ <text x="965" y="555" text-anchor="middle" class="box-sub">Project metadata</text>
+ <text x="965" y="580" text-anchor="middle" class="box-sub">Release and community files</text>
+</g>
+
+<path d="M490 395 V445 H335 V485" class="connector"/>
+<path d="M490 395 V445 H650 V485" class="connector"/>
+<path d="M785 395 V445 H965 V485" class="connector"/>
+</svg>

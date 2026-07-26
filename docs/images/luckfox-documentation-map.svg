@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="720" viewBox="0 0 1400 720" role="img">
+
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#f8fafc"/>
+    <stop offset="100%" stop-color="#eef2f7"/>
+  </linearGradient>
+  <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+    <feDropShadow dx="0" dy="7" stdDeviation="9" flood-color="#0f172a" flood-opacity="0.14"/>
+  </filter>
+  <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+    <path d="M0,0 L12,6 L0,12 Z" fill="#64748b"/>
+  </marker>
+  <style>
+    .title { font: 700 36px Inter, Segoe UI, Arial, sans-serif; fill: #0f172a; }
+    .subtitle { font: 400 17px Inter, Segoe UI, Arial, sans-serif; fill: #475569; }
+    .box-title { font: 700 20px Inter, Segoe UI, Arial, sans-serif; fill: #ffffff; }
+    .box-sub { font: 400 13px Inter, Segoe UI, Arial, sans-serif; fill: rgba(255,255,255,.92); }
+    .label { font: 700 15px Inter, Segoe UI, Arial, sans-serif; fill: #0f172a; }
+    .note { font: 500 13px Inter, Segoe UI, Arial, sans-serif; fill: #64748b; }
+    .mono { font: 600 13px ui-monospace, SFMono-Regular, Consolas, monospace; fill: #334155; }
+    .connector { fill: none; stroke: #64748b; stroke-width: 4; stroke-linecap: round; marker-end: url(#arrow); }
+  </style>
+</defs>
+
+<defs>
+ <linearGradient id="start" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#0f172a"/><stop offset="100%" stop-color="#020617"/></linearGradient>
+ <linearGradient id="guide" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#2563eb"/><stop offset="100%" stop-color="#1d4ed8"/></linearGradient>
+ <linearGradient id="ops" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#059669"/><stop offset="100%" stop-color="#047857"/></linearGradient>
+ <linearGradient id="eng" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#7c3aed"/><stop offset="100%" stop-color="#6d28d9"/></linearGradient>
+</defs>
+<rect width="1400" height="720" rx="30" fill="url(#bg)"/>
+<text x="700" y="58" text-anchor="middle" class="title">Documentation Map</text>
+<text x="700" y="88" text-anchor="middle" class="subtitle">A guided path from project overview to engineering diagnostics</text>
+
+<g filter="url(#shadow)">
+ <rect x="550" y="125" width="300" height="85" rx="22" fill="url(#start)"/>
+ <text x="700" y="165" text-anchor="middle" class="box-title">README</text>
+ <text x="700" y="190" text-anchor="middle" class="box-sub">Project entry point</text>
+</g>
+<path d="M700 210 V250" class="connector"/>
+
+<g filter="url(#shadow)">
+ <rect x="110" y="265" width="230" height="100" rx="22" fill="url(#guide)"/>
+ <text x="225" y="305" text-anchor="middle" class="box-title">Introduction</text>
+ <text x="225" y="332" text-anchor="middle" class="box-sub">Goals and architecture</text>
+
+ <rect x="380" y="265" width="230" height="100" rx="22" fill="url(#guide)"/>
+ <text x="495" y="305" text-anchor="middle" class="box-title">Getting Started</text>
+ <text x="495" y="332" text-anchor="middle" class="box-sub">First successful build</text>
+
+ <rect x="650" y="265" width="230" height="100" rx="22" fill="url(#guide)"/>
+ <text x="765" y="305" text-anchor="middle" class="box-title">Build System</text>
+ <text x="765" y="332" text-anchor="middle" class="box-sub">Pipeline internals</text>
+
+ <rect x="920" y="265" width="230" height="100" rx="22" fill="url(#ops)"/>
+ <text x="1035" y="305" text-anchor="middle" class="box-title">Flashing</text>
+ <text x="1035" y="332" text-anchor="middle" class="box-sub">Create the microSD card</text>
+</g>
+
+<path d="M700 250 H225 V265" class="connector"/>
+<path d="M700 250 H495 V265" class="connector"/>
+<path d="M700 250 H765 V265" class="connector"/>
+<path d="M700 250 H1035 V265" class="connector"/>
+
+<g filter="url(#shadow)">
+ <rect x="245" y="455" width="250" height="100" rx="22" fill="url(#ops)"/>
+ <text x="370" y="495" text-anchor="middle" class="box-title">First Boot</text>
+ <text x="370" y="522" text-anchor="middle" class="box-sub">Startup and verification</text>
+
+ <rect x="575" y="455" width="250" height="100" rx="22" fill="url(#eng)"/>
+ <text x="700" y="495" text-anchor="middle" class="box-title">Memory Optimization</text>
+ <text x="700" y="522" text-anchor="middle" class="box-sub">Low-memory engineering</text>
+
+ <rect x="905" y="455" width="250" height="100" rx="22" fill="url(#eng)"/>
+ <text x="1030" y="495" text-anchor="middle" class="box-title">Troubleshooting</text>
+ <text x="1030" y="522" text-anchor="middle" class="box-sub">Diagnosis and recovery</text>
+</g>
+
+<path d="M1035 365 V410 H370 V455" class="connector"/>
+<path d="M370 555 V600 H700 V555" class="connector"/>
+<path d="M700 555 V600 H1030 V555" class="connector"/>
+
+<g filter="url(#shadow)">
+ <rect x="535" y="610" width="330" height="75" rx="22" fill="#475569"/>
+ <text x="700" y="650" text-anchor="middle" class="box-title">Development &amp; Contributing</text>
+</g>
+</svg>

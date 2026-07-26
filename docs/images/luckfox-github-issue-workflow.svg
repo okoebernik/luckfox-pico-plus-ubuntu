@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="600" viewBox="0 0 1400 600" role="img" aria-labelledby="title desc">
+  <title id="title">Luckfox Ubuntu GitHub issue workflow</title>
+  <desc id="desc">Workflow for reproducing a problem, collecting system and UART logs, sanitizing data, writing an issue and responding to follow-up questions.</desc>
+  
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f8fafc"/>
+      <stop offset="100%" stop-color="#eef2f7"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="7" stdDeviation="9" flood-color="#0f172a" flood-opacity="0.14"/>
+    </filter>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 Z" fill="#64748b"/>
+    </marker>
+    <style>
+      .title { font: 700 36px Inter, Segoe UI, Arial, sans-serif; fill: #0f172a; }
+      .subtitle { font: 400 17px Inter, Segoe UI, Arial, sans-serif; fill: #475569; }
+      .box-title { font: 700 20px Inter, Segoe UI, Arial, sans-serif; fill: #ffffff; }
+      .box-sub { font: 400 13px Inter, Segoe UI, Arial, sans-serif; fill: rgba(255,255,255,.92); }
+      .label { font: 700 15px Inter, Segoe UI, Arial, sans-serif; fill: #0f172a; }
+      .note { font: 500 13px Inter, Segoe UI, Arial, sans-serif; fill: #64748b; }
+      .mono { font: 600 13px ui-monospace, SFMono-Regular, Consolas, monospace; fill: #334155; }
+      .connector { fill: none; stroke: #64748b; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow); }
+      .connector-soft { fill: none; stroke: #94a3b8; stroke-width: 3; stroke-dasharray: 8 8; stroke-linecap: round; marker-end: url(#arrow); }
+    </style>
+  </defs>
+
+  <defs>
+    <linearGradient id="repro" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f97316"/><stop offset="100%" stop-color="#ea580c"/></linearGradient>
+    <linearGradient id="collect" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#2563eb"/><stop offset="100%" stop-color="#1d4ed8"/></linearGradient>
+    <linearGradient id="uart" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#7c3aed"/><stop offset="100%" stop-color="#6d28d9"/></linearGradient>
+    <linearGradient id="sanitize" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#475569"/><stop offset="100%" stop-color="#334155"/></linearGradient>
+    <linearGradient id="issue" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#059669"/><stop offset="100%" stop-color="#047857"/></linearGradient>
+    <linearGradient id="follow" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#0f766e"/><stop offset="100%" stop-color="#115e59"/></linearGradient>
+  </defs>
+
+  <rect width="1400" height="600" rx="30" fill="url(#bg)"/>
+  <text x="700" y="58" text-anchor="middle" class="title">GitHub Issue Workflow</text>
+  <text x="700" y="88" text-anchor="middle" class="subtitle">High-quality reports reduce diagnosis time for everyone</text>
+
+  <g filter="url(#shadow)">
+    <rect x="50" y="180" width="180" height="155" rx="22" fill="url(#repro)"/>
+    <text x="140" y="220" text-anchor="middle" class="box-title">Reproduce</text>
+    <text x="140" y="252" text-anchor="middle" class="box-sub">Exact steps</text>
+    <text x="140" y="280" text-anchor="middle" class="box-sub">Expected vs actual</text>
+  </g>
+  <path d="M230 257 H280" class="connector"/>
+
+  <g filter="url(#shadow)">
+    <rect x="280" y="180" width="180" height="155" rx="22" fill="url(#collect)"/>
+    <text x="370" y="220" text-anchor="middle" class="box-title">Collect</text>
+    <text x="370" y="252" text-anchor="middle" class="box-sub">uname · memory</text>
+    <text x="370" y="280" text-anchor="middle" class="box-sub">network · storage</text>
+  </g>
+  <path d="M460 257 H510" class="connector"/>
+
+  <g filter="url(#shadow)">
+    <rect x="510" y="180" width="180" height="155" rx="22" fill="url(#uart)"/>
+    <text x="600" y="220" text-anchor="middle" class="box-title">Capture Logs</text>
+    <text x="600" y="252" text-anchor="middle" class="box-sub">UART · dmesg</text>
+    <text x="600" y="280" text-anchor="middle" class="box-sub">journalctl</text>
+  </g>
+  <path d="M690 257 H740" class="connector"/>
+
+  <g filter="url(#shadow)">
+    <rect x="740" y="180" width="180" height="155" rx="22" fill="url(#sanitize)"/>
+    <text x="830" y="220" text-anchor="middle" class="box-title">Sanitize</text>
+    <text x="830" y="252" text-anchor="middle" class="box-sub">Remove passwords</text>
+    <text x="830" y="280" text-anchor="middle" class="box-sub">Keep technical detail</text>
+  </g>
+  <path d="M920 257 H970" class="connector"/>
+
+  <g filter="url(#shadow)">
+    <rect x="970" y="180" width="180" height="155" rx="22" fill="url(#issue)"/>
+    <text x="1060" y="220" text-anchor="middle" class="box-title">Open Issue</text>
+    <text x="1060" y="252" text-anchor="middle" class="box-sub">Board · commit</text>
+    <text x="1060" y="280" text-anchor="middle" class="box-sub">Logs · reproduction</text>
+  </g>
+  <path d="M1150 257 H1200" class="connector"/>
+
+  <g filter="url(#shadow)">
+    <rect x="1200" y="180" width="155" height="155" rx="22" fill="url(#follow)"/>
+    <text x="1277" y="220" text-anchor="middle" class="box-title">Follow Up</text>
+    <text x="1277" y="252" text-anchor="middle" class="box-sub">Test proposed fix</text>
+    <text x="1277" y="280" text-anchor="middle" class="box-sub">Report results</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="180" y="405" width="1040" height="110" rx="22" fill="#ffffff" stroke="#cbd5e1"/>
+    <text x="220" y="442" class="label">Minimum issue content</text>
+    <text x="220" y="477" class="note">Board model · project version · Git commit · SD card · complete UART log · commands already tried</text>
+  </g>
+
+  <text x="700" y="555" text-anchor="middle" class="note">Logs should be attached as text whenever possible so they remain searchable.</text>
+</svg>
