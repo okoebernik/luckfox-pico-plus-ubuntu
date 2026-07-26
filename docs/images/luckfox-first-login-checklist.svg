@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="620" viewBox="0 0 1400 620" role="img" aria-labelledby="title desc">
+  <title id="title">Luckfox Ubuntu first login checklist</title>
+  <desc id="desc">Checklist after the first login: operating system, kernel, memory, swap, network, storage and failed services.</desc>
+  
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f8fafc"/>
+      <stop offset="100%" stop-color="#eef2f7"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="7" stdDeviation="9" flood-color="#0f172a" flood-opacity="0.14"/>
+    </filter>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 Z" fill="#64748b"/>
+    </marker>
+    <style>
+      .title { font: 700 36px Inter, Segoe UI, Arial, sans-serif; fill: #0f172a; }
+      .subtitle { font: 400 17px Inter, Segoe UI, Arial, sans-serif; fill: #475569; }
+      .box-title { font: 700 20px Inter, Segoe UI, Arial, sans-serif; fill: #ffffff; }
+      .box-sub { font: 400 13px Inter, Segoe UI, Arial, sans-serif; fill: rgba(255,255,255,.9); }
+      .label { font: 700 15px Inter, Segoe UI, Arial, sans-serif; fill: #0f172a; }
+      .note { font: 500 13px Inter, Segoe UI, Arial, sans-serif; fill: #64748b; }
+      .mono { font: 600 13px ui-monospace, SFMono-Regular, Consolas, monospace; fill: #334155; }
+      .connector { fill: none; stroke: #64748b; stroke-width: 4; stroke-linecap: round; marker-end: url(#arrow); }
+    </style>
+  </defs>
+
+  <defs>
+    <linearGradient id="os" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f97316"/><stop offset="100%" stop-color="#ea580c"/></linearGradient>
+    <linearGradient id="kernel" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#2563eb"/><stop offset="100%" stop-color="#1d4ed8"/></linearGradient>
+    <linearGradient id="memory" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#7c3aed"/><stop offset="100%" stop-color="#6d28d9"/></linearGradient>
+    <linearGradient id="swap" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#059669"/><stop offset="100%" stop-color="#047857"/></linearGradient>
+    <linearGradient id="network" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#0ea5e9"/><stop offset="100%" stop-color="#0284c7"/></linearGradient>
+    <linearGradient id="storage" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#475569"/><stop offset="100%" stop-color="#334155"/></linearGradient>
+    <linearGradient id="services" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#0f766e"/><stop offset="100%" stop-color="#115e59"/></linearGradient>
+  </defs>
+
+  <rect width="1400" height="620" rx="30" fill="url(#bg)"/>
+  <text x="700" y="58" text-anchor="middle" class="title">First Login Checklist</text>
+  <text x="700" y="88" text-anchor="middle" class="subtitle">Verify the system before installing additional software</text>
+
+  <g filter="url(#shadow)">
+    <rect x="50" y="170" width="165" height="140" rx="22" fill="url(#os)"/>
+    <text x="132" y="212" text-anchor="middle" class="box-title">Ubuntu</text>
+    <text x="132" y="243" text-anchor="middle" class="box-sub">cat /etc/os-release</text>
+    <text x="132" y="270" text-anchor="middle" class="box-sub">Expect 22.04 LTS</text>
+  </g>
+  <path d="M215 240 H250" class="connector"/>
+
+  <g filter="url(#shadow)">
+    <rect x="250" y="170" width="165" height="140" rx="22" fill="url(#kernel)"/>
+    <text x="332" y="212" text-anchor="middle" class="box-title">Kernel</text>
+    <text x="332" y="243" text-anchor="middle" class="box-sub">uname -a</text>
+    <text x="332" y="270" text-anchor="middle" class="box-sub">Expect 5.10.160</text>
+  </g>
+  <path d="M415 240 H450" class="connector"/>
+
+  <g filter="url(#shadow)">
+    <rect x="450" y="170" width="165" height="140" rx="22" fill="url(#memory)"/>
+    <text x="532" y="212" text-anchor="middle" class="box-title">Memory</text>
+    <text x="532" y="243" text-anchor="middle" class="box-sub">free -h</text>
+    <text x="532" y="270" text-anchor="middle" class="box-sub">Check available RAM</text>
+  </g>
+  <path d="M615 240 H650" class="connector"/>
+
+  <g filter="url(#shadow)">
+    <rect x="650" y="170" width="165" height="140" rx="22" fill="url(#swap)"/>
+    <text x="732" y="212" text-anchor="middle" class="box-title">Swap</text>
+    <text x="732" y="243" text-anchor="middle" class="box-sub">swapon --show</text>
+    <text x="732" y="270" text-anchor="middle" class="box-sub">Expect ~512 MiB</text>
+  </g>
+  <path d="M815 240 H850" class="connector"/>
+
+  <g filter="url(#shadow)">
+    <rect x="850" y="170" width="165" height="140" rx="22" fill="url(#network)"/>
+    <text x="932" y="212" text-anchor="middle" class="box-title">Network</text>
+    <text x="932" y="243" text-anchor="middle" class="box-sub">ip address</text>
+    <text x="932" y="270" text-anchor="middle" class="box-sub">Confirm DHCP address</text>
+  </g>
+  <path d="M1015 240 H1050" class="connector"/>
+
+  <g filter="url(#shadow)">
+    <rect x="1050" y="170" width="165" height="140" rx="22" fill="url(#storage)"/>
+    <text x="1132" y="212" text-anchor="middle" class="box-title">Storage</text>
+    <text x="1132" y="243" text-anchor="middle" class="box-sub">df -h</text>
+    <text x="1132" y="270" text-anchor="middle" class="box-sub">Check rootfs capacity</text>
+  </g>
+  <path d="M1215 240 H1250" class="connector"/>
+
+  <g filter="url(#shadow)">
+    <rect x="1250" y="170" width="115" height="140" rx="22" fill="url(#services)"/>
+    <text x="1307" y="212" text-anchor="middle" class="box-title">Services</text>
+    <text x="1307" y="243" text-anchor="middle" class="box-sub">systemctl</text>
+    <text x="1307" y="270" text-anchor="middle" class="box-sub">No failures</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="165" y="375" width="1070" height="120" rx="22" fill="#ffffff" stroke="#cbd5e1"/>
+    <text x="205" y="415" class="label">Recommended verification command</text>
+    <text x="205" y="456" class="mono">cat /etc/os-release &amp;&amp; uname -a &amp;&amp; free -h &amp;&amp; swapon --show &amp;&amp; ip address &amp;&amp; df -h</text>
+  </g>
+
+  <text x="700" y="550" text-anchor="middle" class="note">Do not install memory-intensive packages until swap, networking and storage have been verified.</text>
+</svg>
