@@ -1,62 +1,100 @@
-# Introduction
+---
+title: Introduction
+description: Motivation, goals and architecture of Ubuntu 22.04 for the Luckfox Pico Plus.
+version: v0.1.0
+---
 
-Welcome to **Ubuntu 22.04 for Luckfox Pico Plus**.
+<p align="center">
 
-This project provides a reproducible way to build and deploy a minimal Ubuntu 22.04 LTS system for the **Luckfox Pico Plus (RV1103)** while continuing to use the official Luckfox SDK, Linux kernel and board support package.
+# Ubuntu 22.04 for Luckfox Pico Plus
 
-The goal is not to replace the vendor SDK. Instead, the project extends it with a familiar Ubuntu userspace that is easier to maintain and more suitable for software development.
+### Introduction
+
+<img src="images/luckfox-ubuntu-architecture.svg"
+     alt="Luckfox Ubuntu Architecture"
+     width="100%">
+
+</p>
+
+> [!NOTE]
+> This document introduces the project, explains its motivation and describes the overall architecture before diving into the implementation details.
+
+| Previous | Home | Next |
+|-----------|------|------|
+| ← README | [README](../README.md) | Getting Started → |
+
+---
+
+# Table of Contents
+
+- Motivation
+- Why Ubuntu?
+- Project Goals
+- Architecture
+- Design Principles
+- Current Status
+- Repository Structure
+- Next Steps
 
 ---
 
 # Motivation
 
-The official Luckfox SDK is based on **Buildroot**.
+The **Luckfox Pico Plus** is a remarkably capable embedded Linux platform based on the Rockchip **RV1103** SoC.
 
-Buildroot is an excellent choice for dedicated embedded devices. It creates small, efficient and highly customized Linux systems.
+The official Luckfox SDK already provides an excellent Buildroot-based operating system together with a modern Linux kernel, bootloader, device tree and complete hardware support.
 
-However, many developers eventually require functionality that is much easier to obtain from a complete Linux distribution.
+For many embedded products this is exactly the right solution.
+
+However, application development often requires a more familiar Linux userspace.
 
 Typical examples include:
 
-- installing software through `apt`
-- running Python applications
-- using standard Linux development tools
-- compiling software directly on the target
-- creating gateways and automation systems
-- experimenting with networking software
-- rapid application prototyping
+- Python development
+- C/C++ application development
+- Network services
+- REST APIs
+- MQTT gateways
+- Home automation
+- Rapid software prototyping
 
-Rebuilding an entire Buildroot image for every package change quickly becomes time consuming.
+While all of these applications can be implemented using Buildroot, maintaining a custom Buildroot configuration quickly becomes time-consuming.
 
-Ubuntu already provides thousands of precompiled packages that can be installed in seconds.
+Ubuntu already provides thousands of precompiled packages through `apt`, making application development significantly easier.
 
-This project combines these advantages with the hardware support already provided by the Luckfox SDK.
+This project combines the flexibility of Ubuntu with the stability of the official Luckfox SDK.
+
+---
+
+# Why Ubuntu?
+
+Ubuntu is one of the most widely used Linux distributions in embedded development.
+
+It provides:
+
+- long-term support (LTS)
+- excellent package availability
+- familiar development tools
+- large community support
+- reliable security updates
+
+Rather than rebuilding the operating system every time a package changes, software can simply be installed using:
+
+```bash
+sudo apt install <package>
+```
+
+This dramatically reduces development time.
 
 ---
 
 # Project Goals
 
-The project follows several design goals.
+The project follows several important design goals.
 
 ## Reproducible
 
 Every firmware image should be reproducible from source.
-
-No manual modifications should be required after cloning the repository.
-
----
-
-## Compatible
-
-The original Luckfox bootloader, kernel, drivers and board support package remain untouched.
-
-Whenever possible, improvements are implemented entirely within the Ubuntu userspace.
-
----
-
-## Automated
-
-The complete build process is automated.
 
 Running
 
@@ -64,141 +102,149 @@ Running
 ./scripts/build-all.sh
 ```
 
-should generate a complete release package without requiring additional manual steps.
+should always generate the same release.
 
 ---
 
-## Documented
+## Compatible
 
-Every step of the build process is documented.
+The project intentionally keeps the official Luckfox SDK unchanged.
 
-The repository should be understandable even for developers who have never worked with Rockchip hardware before.
+The following components remain vendor supplied:
+
+- BootROM
+- idblock
+- U-Boot
+- Linux kernel
+- Device Tree
+- Hardware drivers
+
+Ubuntu replaces only the userspace.
+
+---
+
+## Automated
+
+The complete build process is automated.
+
+Individual scripts perform:
+
+- Ubuntu optimization
+- Kernel module integration
+- Root filesystem generation
+- Firmware packaging
+- Release creation
 
 ---
 
 ## Lightweight
 
-The Luckfox Pico Plus provides only a very limited amount of memory.
+The Luckfox Pico Plus provides only approximately **32 MiB RAM**.
 
-Ubuntu therefore has to be carefully optimized in order to remain usable.
+Running Ubuntu on such a platform requires careful optimization.
 
 Examples include:
 
 - swap support
 - reduced systemd footprint
-- volatile logging
 - disabled maintenance timers
-- optimized memory configuration
+- volatile logging
+- optimized memory usage
 
 ---
 
-# Project Architecture
+# Overall Architecture
 
-The project is built around two independent components.
+The following diagram illustrates the relationship between the official SDK and the Ubuntu userspace.
 
-## Luckfox SDK
+<p align="center">
 
-The official SDK provides:
+<img src="images/luckfox-ubuntu-architecture.svg"
+     alt="Luckfox Ubuntu Architecture"
+     width="100%">
 
-- U-Boot
+</p>
+
+The project consists of two independent parts.
+
+## Official Luckfox SDK
+
+Provides:
+
+- Bootloader
 - Linux kernel
 - Device Tree
-- hardware drivers
-- firmware creation tools
+- Drivers
+- Firmware tools
 
 These components remain unchanged.
 
 ---
 
-## Ubuntu Root Filesystem
+## Ubuntu Userspace
 
-The Ubuntu userspace provides:
+Provides:
 
 - Ubuntu 22.04 LTS
 - ARMHF userspace
+- apt package manager
 - OpenSSH
-- apt package management
 - systemd
-- standard Linux environment
+- Standard Linux environment
 
-The root filesystem is generated automatically using **debootstrap**.
+The userspace is generated automatically using `debootstrap`.
 
 ---
 
-# Build Pipeline
+# Design Principles
 
-The following diagram illustrates the overall architecture.
+The project deliberately separates hardware support from the operating system.
 
-> See **docs/images/luckfox-ubuntu-architecture.svg**
+This architecture offers several advantages:
 
-<p align="center">
-  <img src="images/luckfox-ubuntu-build-pipeline.svg"
-       alt="Luckfox Ubuntu Build Pipeline"
-       width="100%">
-</p>
+- easier SDK updates
+- fewer vendor modifications
+- reproducible builds
+- simpler debugging
+- long-term maintainability
 
+Whenever possible, improvements are implemented entirely inside the Ubuntu userspace.
+
+---
 
 # Current Status
 
-The project is currently under active development.
-
-Already implemented:
-
-| Feature | Status |
-|----------|--------|
+| Component | Status |
+|-----------|--------|
 | Ubuntu 22.04 | ✅ |
 | Linux Kernel | ✅ |
 | Ethernet | ✅ |
 | SSH | ✅ |
 | apt | ✅ |
-| Automated RootFS generation | ✅ |
-| Automated firmware packaging | ✅ |
-| Release pipeline | ✅ |
-| Swap support | ✅ |
-
-Work in progress:
-
-| Feature | Status |
-|----------|--------|
-| GPIO helper library | 🚧 |
-| Camera support | 🚧 |
-| Automatic filesystem expansion | 🚧 |
-| CI/CD build pipeline | 🚧 |
-
----
-
-# Intended Audience
-
-This project is intended for developers who want to use the Luckfox Pico Plus as a general-purpose embedded Linux platform.
-
-Typical applications include:
-
-- IoT gateways
-- automation systems
-- industrial controllers
-- edge computing
-- network appliances
-- Linux software development
-- embedded Python applications
-- educational projects
+| Automated Build | ✅ |
+| Release Pipeline | ✅ |
+| Memory Optimization | ✅ |
+| GPIO Documentation | 🚧 |
+| Camera Support | 🚧 |
+| CI/CD | 🚧 |
 
 ---
 
 # Repository Structure
 
-The repository is organized into several independent components.
+The repository is organized into several logical components.
 
-```
+```text
 README.md
 
 config/
     Project configuration
 
 docs/
-    Complete project documentation
+    Documentation
 
 docs/images/
-    Architecture diagrams
+    Diagrams
 
 scripts/
     Build automation
@@ -207,23 +253,41 @@ sdk/
     Official Luckfox SDK
 
 rootfs/
-    Generated Ubuntu root filesystem
+    Generated Ubuntu filesystem
 
 output/
-    Generated firmware images
+    Generated firmware
 ```
 
-Only the generated images and the Ubuntu root filesystem are excluded from version control.
+Only generated artifacts are excluded from version control.
+
+---
+
+# Documentation
+
+The project documentation is organized into multiple guides.
+
+| Document | Description |
+|-----------|-------------|
+| Getting Started | Initial project setup |
+| Build System | Complete build pipeline |
+| Flashing | Creating a bootable SD card |
+| First Boot | Initial startup |
+| Memory Optimization | Running Ubuntu on low-memory hardware |
+| Troubleshooting | Known issues and solutions |
 
 ---
 
 # Next Steps
 
-Continue with:
+Continue with **Getting Started** to prepare your development environment and build your first Ubuntu firmware image.
 
-- **02 Getting Started**
-- **03 Build System**
-- **04 Flashing**
-- **05 First Boot**
-- **06 Memory Optimization**
-- **07 Troubleshooting**
+---
+
+## Continue Reading
+
+| Previous | Home | Next |
+|-----------|------|------|
+| ← README | [README](../README.md) | Getting Started → |
+
+---
