@@ -53,25 +53,11 @@ version: v0.1.0
 
 ## Diagnostic Philosophy
 
-Troubleshooting should follow the system stack instead of guessing.
-
-```text
-Power
-  ↓
-BootROM / idblock
-  ↓
-U-Boot
-  ↓
-Linux kernel
-  ↓
-Root filesystem
-  ↓
-systemd / Ubuntu userspace
-  ↓
-Network
-  ↓
-SSH / applications
-```
+<p align="center">
+  <img src="images/luckfox-diagnostic-philosophy.svg"
+       alt="Luckfox Ubuntu Diagnostic Philosophy"
+       width="100%">
+</p>
 
 Always identify:
 
@@ -80,7 +66,7 @@ Always identify:
 3. the evidence that proves both conclusions.
 
 > [!IMPORTANT]
-> Do not debug SSH while the kernel or network layer is still unproven. Do not reflash before preserving the UART output.
+> Troubleshoot from the lowest unproven layer upward. Never skip layers, never guess, and change only one variable at a time.
 
 ---
 

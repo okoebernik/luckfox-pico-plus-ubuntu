@@ -1,0 +1,163 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900" role="img" aria-labelledby="title desc">
+  <title id="title">Luckfox Ubuntu Diagnostic Philosophy</title>
+  <desc id="desc">A layered diagnostic stack from power through BootROM, U-Boot, kernel, root filesystem, systemd, network and SSH, with guidance to identify the highest working layer, the first failing layer and the evidence proving both.</desc>
+
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f8fafc"/>
+      <stop offset="100%" stop-color="#eef2f7"/>
+    </linearGradient>
+
+    <linearGradient id="power" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#020617"/>
+    </linearGradient>
+
+    <linearGradient id="bootrom" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#475569"/>
+      <stop offset="100%" stop-color="#334155"/>
+    </linearGradient>
+
+    <linearGradient id="uboot" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#7c3aed"/>
+      <stop offset="100%" stop-color="#6d28d9"/>
+    </linearGradient>
+
+    <linearGradient id="kernel" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#2563eb"/>
+      <stop offset="100%" stop-color="#1d4ed8"/>
+    </linearGradient>
+
+    <linearGradient id="rootfs" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f97316"/>
+      <stop offset="100%" stop-color="#ea580c"/>
+    </linearGradient>
+
+    <linearGradient id="systemd" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0ea5e9"/>
+      <stop offset="100%" stop-color="#0284c7"/>
+    </linearGradient>
+
+    <linearGradient id="network" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#059669"/>
+      <stop offset="100%" stop-color="#047857"/>
+    </linearGradient>
+
+    <linearGradient id="ssh" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0f766e"/>
+      <stop offset="100%" stop-color="#115e59"/>
+    </linearGradient>
+
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="7" stdDeviation="9" flood-color="#0f172a" flood-opacity="0.14"/>
+    </filter>
+
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 Z" fill="#64748b"/>
+    </marker>
+
+    <style>
+      .title { font: 700 36px Inter, Segoe UI, Arial, sans-serif; fill: #0f172a; }
+      .subtitle { font: 400 17px Inter, Segoe UI, Arial, sans-serif; fill: #475569; }
+      .layer-title { font: 700 19px Inter, Segoe UI, Arial, sans-serif; fill: #ffffff; }
+      .layer-sub { font: 400 13px Inter, Segoe UI, Arial, sans-serif; fill: rgba(255,255,255,.92); }
+      .rule-title { font: 700 15px Inter, Segoe UI, Arial, sans-serif; fill: #0f172a; }
+      .rule-text { font: 500 13px Inter, Segoe UI, Arial, sans-serif; fill: #475569; }
+      .note { font: 500 13px Inter, Segoe UI, Arial, sans-serif; fill: #64748b; }
+      .connector { fill: none; stroke: #64748b; stroke-width: 4; stroke-linecap: round; marker-end: url(#arrow); }
+    </style>
+  </defs>
+
+  <rect width="1400" height="900" rx="30" fill="url(#bg)"/>
+
+  <text x="700" y="58" text-anchor="middle" class="title">Diagnostic Philosophy</text>
+  <text x="700" y="88" text-anchor="middle" class="subtitle">Follow the system stack instead of guessing</text>
+
+  <g filter="url(#shadow)">
+    <rect x="430" y="125" width="540" height="72" rx="20" fill="url(#power)"/>
+    <text x="700" y="158" text-anchor="middle" class="layer-title">Power</text>
+    <text x="700" y="181" text-anchor="middle" class="layer-sub">Supply · cable · board stability</text>
+  </g>
+  <path d="M700 197 V225" class="connector"/>
+
+  <g filter="url(#shadow)">
+    <rect x="430" y="225" width="540" height="72" rx="20" fill="url(#bootrom)"/>
+    <text x="700" y="258" text-anchor="middle" class="layer-title">BootROM / idblock</text>
+    <text x="700" y="281" text-anchor="middle" class="layer-sub">Boot media detection · DDR initialization</text>
+  </g>
+  <path d="M700 297 V325" class="connector"/>
+
+  <g filter="url(#shadow)">
+    <rect x="430" y="325" width="540" height="72" rx="20" fill="url(#uboot)"/>
+    <text x="700" y="358" text-anchor="middle" class="layer-title">U-Boot</text>
+    <text x="700" y="381" text-anchor="middle" class="layer-sub">Loads kernel and Device Tree</text>
+  </g>
+  <path d="M700 397 V425" class="connector"/>
+
+  <g filter="url(#shadow)">
+    <rect x="430" y="425" width="540" height="72" rx="20" fill="url(#kernel)"/>
+    <text x="700" y="458" text-anchor="middle" class="layer-title">Linux Kernel</text>
+    <text x="700" y="481" text-anchor="middle" class="layer-sub">Drivers · memory · root device discovery</text>
+  </g>
+  <path d="M700 497 V525" class="connector"/>
+
+  <g filter="url(#shadow)">
+    <rect x="430" y="525" width="540" height="72" rx="20" fill="url(#rootfs)"/>
+    <text x="700" y="558" text-anchor="middle" class="layer-title">Root Filesystem</text>
+    <text x="700" y="581" text-anchor="middle" class="layer-sub">ext4 mount · files · configuration</text>
+  </g>
+  <path d="M700 597 V625" class="connector"/>
+
+  <g filter="url(#shadow)">
+    <rect x="430" y="625" width="540" height="72" rx="20" fill="url(#systemd)"/>
+    <text x="700" y="658" text-anchor="middle" class="layer-title">systemd / Ubuntu Userspace</text>
+    <text x="700" y="681" text-anchor="middle" class="layer-sub">Services · swap · login · userspace startup</text>
+  </g>
+  <path d="M700 697 V725" class="connector"/>
+
+  <g filter="url(#shadow)">
+    <rect x="430" y="725" width="540" height="72" rx="20" fill="url(#network)"/>
+    <text x="700" y="758" text-anchor="middle" class="layer-title">Network</text>
+    <text x="700" y="781" text-anchor="middle" class="layer-sub">Link · DHCP · route · DNS</text>
+  </g>
+  <path d="M700 797 V825" class="connector"/>
+
+  <g filter="url(#shadow)">
+    <rect x="430" y="825" width="540" height="52" rx="20" fill="url(#ssh)"/>
+    <text x="700" y="858" text-anchor="middle" class="layer-title">SSH / Applications</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="55" y="180" width="300" height="200" rx="22" fill="#ffffff" stroke="#cbd5e1"/>
+    <text x="90" y="222" class="rule-title">1 · Highest working layer</text>
+    <text x="90" y="257" class="rule-text">Identify the last milestone</text>
+    <text x="90" y="282" class="rule-text">that is clearly proven by</text>
+    <text x="90" y="307" class="rule-text">UART, logs or commands.</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="1045" y="180" width="300" height="200" rx="22" fill="#ffffff" stroke="#cbd5e1"/>
+    <text x="1080" y="222" class="rule-title">2 · First failing layer</text>
+    <text x="1080" y="257" class="rule-text">Find the first expected</text>
+    <text x="1080" y="282" class="rule-text">milestone that is missing</text>
+    <text x="1080" y="307" class="rule-text">or produces an error.</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="55" y="475" width="300" height="200" rx="22" fill="#ecfdf5" stroke="#6ee7b7"/>
+    <text x="90" y="517" class="rule-title">3 · Evidence</text>
+    <text x="90" y="552" class="rule-text">Use UART output, dmesg,</text>
+    <text x="90" y="577" class="rule-text">journalctl and live system</text>
+    <text x="90" y="602" class="rule-text">state to prove both.</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="1045" y="475" width="300" height="200" rx="22" fill="#fff7ed" stroke="#fdba74"/>
+    <text x="1080" y="517" class="rule-title">Engineering rule</text>
+    <text x="1080" y="552" class="rule-text">Never skip layers.</text>
+    <text x="1080" y="577" class="rule-text">Never guess.</text>
+    <text x="1080" y="602" class="rule-text">Change one variable only.</text>
+  </g>
+
+  <text x="700" y="895" text-anchor="middle" class="note">Troubleshoot from the lowest unproven layer upward.</text>
+</svg>
