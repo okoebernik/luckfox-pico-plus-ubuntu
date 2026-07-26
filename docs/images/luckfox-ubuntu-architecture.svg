@@ -1,0 +1,139 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="680" viewBox="0 0 1200 680" role="img" aria-labelledby="title desc">
+  <title id="title">Luckfox Ubuntu build architecture</title>
+  <desc id="desc">Architecture diagram showing the Luckfox SDK and Ubuntu root filesystem feeding the build pipeline, producing release images that are written with SocToolKit to a Luckfox Pico Plus.</desc>
+
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f8fafc"/>
+      <stop offset="100%" stop-color="#eef2f7"/>
+    </linearGradient>
+    <linearGradient id="sdk" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#2563eb"/>
+      <stop offset="100%" stop-color="#1d4ed8"/>
+    </linearGradient>
+    <linearGradient id="ubuntu" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f97316"/>
+      <stop offset="100%" stop-color="#ea580c"/>
+    </linearGradient>
+    <linearGradient id="pipeline" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#7c3aed"/>
+      <stop offset="100%" stop-color="#6d28d9"/>
+    </linearGradient>
+    <linearGradient id="release" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#059669"/>
+      <stop offset="100%" stop-color="#047857"/>
+    </linearGradient>
+    <linearGradient id="tool" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#475569"/>
+      <stop offset="100%" stop-color="#334155"/>
+    </linearGradient>
+    <linearGradient id="board" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#020617"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="7" stdDeviation="9" flood-color="#0f172a" flood-opacity="0.14"/>
+    </filter>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 Z" fill="#64748b"/>
+    </marker>
+    <style>
+      .title { font: 700 34px Inter, Segoe UI, Arial, sans-serif; fill: #0f172a; }
+      .subtitle { font: 400 17px Inter, Segoe UI, Arial, sans-serif; fill: #475569; }
+      .box-title { font: 700 22px Inter, Segoe UI, Arial, sans-serif; fill: #ffffff; }
+      .box-sub { font: 400 14px Inter, Segoe UI, Arial, sans-serif; fill: rgba(255,255,255,.88); }
+      .chip { font: 600 13px Inter, Segoe UI, Arial, sans-serif; fill: #334155; }
+      .footer { font: 500 13px Inter, Segoe UI, Arial, sans-serif; fill: #64748b; }
+      .connector { fill: none; stroke: #64748b; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow); }
+    </style>
+  </defs>
+
+  <rect width="1200" height="680" rx="28" fill="url(#bg)"/>
+
+  <text x="600" y="58" text-anchor="middle" class="title">Luckfox Ubuntu Build Architecture</text>
+  <text x="600" y="88" text-anchor="middle" class="subtitle">Official Luckfox BSP combined with an Ubuntu 22.04 ARMHF userspace</text>
+
+  <g filter="url(#shadow)">
+    <rect x="95" y="145" width="360" height="150" rx="24" fill="url(#sdk)"/>
+    <circle cx="145" cy="195" r="24" fill="rgba(255,255,255,.16)"/>
+    <path d="M132 196h26M145 183v26" stroke="#fff" stroke-width="4" stroke-linecap="round"/>
+    <text x="185" y="190" class="box-title">Luckfox SDK</text>
+    <text x="185" y="218" class="box-sub">U-Boot · Linux 5.10.160 · Device Tree</text>
+    <text x="185" y="243" class="box-sub">Board support · Drivers · Firmware tools</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="745" y="145" width="360" height="150" rx="24" fill="url(#ubuntu)"/>
+    <circle cx="795" cy="195" r="24" fill="rgba(255,255,255,.16)"/>
+    <circle cx="795" cy="195" r="10" fill="none" stroke="#fff" stroke-width="4"/>
+    <circle cx="795" cy="179" r="4" fill="#fff"/>
+    <circle cx="781" cy="203" r="4" fill="#fff"/>
+    <circle cx="809" cy="203" r="4" fill="#fff"/>
+    <text x="835" y="190" class="box-title">Ubuntu RootFS</text>
+    <text x="835" y="218" class="box-sub">Ubuntu 22.04 LTS · ARMHF · apt</text>
+    <text x="835" y="243" class="box-sub">SSH · systemd · low-memory tuning</text>
+  </g>
+
+  <path d="M275 295 V335 H535" class="connector"/>
+  <path d="M925 295 V335 H665" class="connector"/>
+
+  <g filter="url(#shadow)">
+    <rect x="420" y="330" width="360" height="110" rx="24" fill="url(#pipeline)"/>
+    <text x="600" y="375" text-anchor="middle" class="box-title">Automated Build Pipeline</text>
+    <text x="600" y="404" text-anchor="middle" class="box-sub">optimize · modules · rootfs image · package · verify</text>
+  </g>
+
+  <path d="M600 440 V485" class="connector"/>
+
+  <g filter="url(#shadow)">
+    <rect x="155" y="485" width="310" height="120" rx="22" fill="url(#release)"/>
+    <text x="310" y="528" text-anchor="middle" class="box-title">Release Images</text>
+    <text x="310" y="556" text-anchor="middle" class="box-sub">boot.img · rootfs.img · userdata.img</text>
+    <text x="310" y="580" text-anchor="middle" class="box-sub">SHA256SUMS · manifest.txt</text>
+  </g>
+
+  <path d="M465 545 H520" class="connector"/>
+
+  <g filter="url(#shadow)">
+    <rect x="520" y="485" width="250" height="120" rx="22" fill="url(#tool)"/>
+    <text x="645" y="528" text-anchor="middle" class="box-title">SocToolKit</text>
+    <text x="645" y="556" text-anchor="middle" class="box-sub">Create SD Card</text>
+    <text x="645" y="580" text-anchor="middle" class="box-sub">Rockchip partition layout</text>
+  </g>
+
+  <path d="M770 545 H825" class="connector"/>
+
+  <g filter="url(#shadow)">
+    <rect x="825" y="485" width="220" height="120" rx="22" fill="url(#board)"/>
+    <rect x="855" y="514" width="72" height="62" rx="8" fill="#111827" stroke="#94a3b8" stroke-width="2"/>
+    <g stroke="#cbd5e1" stroke-width="2">
+      <line x1="850" y1="522" x2="838" y2="522"/>
+      <line x1="850" y1="534" x2="838" y2="534"/>
+      <line x1="850" y1="546" x2="838" y2="546"/>
+      <line x1="850" y1="558" x2="838" y2="558"/>
+      <line x1="932" y1="522" x2="944" y2="522"/>
+      <line x1="932" y1="534" x2="944" y2="534"/>
+      <line x1="932" y1="546" x2="944" y2="546"/>
+      <line x1="932" y1="558" x2="944" y2="558"/>
+    </g>
+    <text x="960" y="533" text-anchor="middle" class="box-title" font-size="18">Luckfox</text>
+    <text x="960" y="558" text-anchor="middle" class="box-title" font-size="18">Pico Plus</text>
+    <text x="960" y="582" text-anchor="middle" class="box-sub">RV1103 · microSD boot</text>
+  </g>
+
+  <g>
+    <rect x="395" y="625" width="116" height="30" rx="15" fill="#ffffff" stroke="#cbd5e1"/>
+    <text x="453" y="645" text-anchor="middle" class="chip">Ubuntu 22.04</text>
+
+    <rect x="523" y="625" width="112" height="30" rx="15" fill="#ffffff" stroke="#cbd5e1"/>
+    <text x="579" y="645" text-anchor="middle" class="chip">Linux 5.10</text>
+
+    <rect x="647" y="625" width="92" height="30" rx="15" fill="#ffffff" stroke="#cbd5e1"/>
+    <text x="693" y="645" text-anchor="middle" class="chip">ARMHF</text>
+
+    <rect x="751" y="625" width="106" height="30" rx="15" fill="#ffffff" stroke="#cbd5e1"/>
+    <text x="804" y="645" text-anchor="middle" class="chip">SD boot</text>
+  </g>
+
+  <text x="40" y="653" class="footer">luckfox-pico-plus-ubuntu · architecture overview</text>
+</svg>
