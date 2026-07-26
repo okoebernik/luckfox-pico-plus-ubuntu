@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="720" viewBox="0 0 1400 720" role="img">
+
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#f8fafc"/>
+    <stop offset="100%" stop-color="#eef2f7"/>
+  </linearGradient>
+  <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+    <feDropShadow dx="0" dy="7" stdDeviation="9" flood-color="#0f172a" flood-opacity="0.14"/>
+  </filter>
+  <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+    <path d="M0,0 L12,6 L0,12 Z" fill="#64748b"/>
+  </marker>
+  <style>
+    .title { font: 700 36px Inter, Segoe UI, Arial, sans-serif; fill: #0f172a; }
+    .subtitle { font: 400 17px Inter, Segoe UI, Arial, sans-serif; fill: #475569; }
+    .box-title { font: 700 20px Inter, Segoe UI, Arial, sans-serif; fill: #ffffff; }
+    .box-sub { font: 400 13px Inter, Segoe UI, Arial, sans-serif; fill: rgba(255,255,255,.92); }
+    .label { font: 700 15px Inter, Segoe UI, Arial, sans-serif; fill: #0f172a; }
+    .note { font: 500 13px Inter, Segoe UI, Arial, sans-serif; fill: #64748b; }
+    .mono { font: 600 13px ui-monospace, SFMono-Regular, Consolas, monospace; fill: #334155; }
+    .connector { fill: none; stroke: #64748b; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow); }
+    .connector-soft { fill: none; stroke: #94a3b8; stroke-width: 3; stroke-dasharray: 8 8; stroke-linecap: round; marker-end: url(#arrow); }
+  </style>
+</defs>
+
+<defs>
+  <linearGradient id="step" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#2563eb"/><stop offset="100%" stop-color="#1d4ed8"/></linearGradient>
+  <linearGradient id="net" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#0ea5e9"/><stop offset="100%" stop-color="#0284c7"/></linearGradient>
+  <linearGradient id="svc" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#7c3aed"/><stop offset="100%" stop-color="#6d28d9"/></linearGradient>
+  <linearGradient id="auth" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f97316"/><stop offset="100%" stop-color="#ea580c"/></linearGradient>
+  <linearGradient id="ok" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#059669"/><stop offset="100%" stop-color="#047857"/></linearGradient>
+</defs>
+<rect width="1400" height="720" rx="30" fill="url(#bg)"/>
+<text x="700" y="58" text-anchor="middle" class="title">SSH Troubleshooting</text>
+<text x="700" y="88" text-anchor="middle" class="subtitle">Separate network reachability, service state and authentication</text>
+
+<g filter="url(#shadow)">
+  <rect x="55" y="180" width="185" height="145" rx="22" fill="url(#step)"/>
+  <text x="147" y="221" text-anchor="middle" class="box-title">1 · IP Known?</text>
+  <text x="147" y="252" text-anchor="middle" class="box-sub">DHCP lease table</text>
+  <text x="147" y="279" text-anchor="middle" class="box-sub">ip address</text>
+</g>
+<path d="M240 252 H285" class="connector"/>
+
+<g filter="url(#shadow)">
+  <rect x="285" y="180" width="185" height="145" rx="22" fill="url(#net)"/>
+  <text x="377" y="221" text-anchor="middle" class="box-title">2 · Ping?</text>
+  <text x="377" y="252" text-anchor="middle" class="box-sub">Link and routing</text>
+  <text x="377" y="279" text-anchor="middle" class="box-sub">ping board-ip</text>
+</g>
+<path d="M470 252 H515" class="connector"/>
+
+<g filter="url(#shadow)">
+  <rect x="515" y="180" width="185" height="145" rx="22" fill="url(#net)"/>
+  <text x="607" y="221" text-anchor="middle" class="box-title">3 · Port 22?</text>
+  <text x="607" y="252" text-anchor="middle" class="box-sub">TCP listener</text>
+  <text x="607" y="279" text-anchor="middle" class="box-sub">nc -vz board 22</text>
+</g>
+<path d="M700 252 H745" class="connector"/>
+
+<g filter="url(#shadow)">
+  <rect x="745" y="180" width="185" height="145" rx="22" fill="url(#svc)"/>
+  <text x="837" y="221" text-anchor="middle" class="box-title">4 · ssh.service?</text>
+  <text x="837" y="252" text-anchor="middle" class="box-sub">systemctl status</text>
+  <text x="837" y="279" text-anchor="middle" class="box-sub">ss -ltn</text>
+</g>
+<path d="M930 252 H975" class="connector"/>
+
+<g filter="url(#shadow)">
+  <rect x="975" y="180" width="185" height="145" rx="22" fill="url(#auth)"/>
+  <text x="1067" y="221" text-anchor="middle" class="box-title">5 · Authentication?</text>
+  <text x="1067" y="252" text-anchor="middle" class="box-sub">Password · keys · PAM</text>
+  <text x="1067" y="279" text-anchor="middle" class="box-sub">ssh -vvv</text>
+</g>
+<path d="M1160 252 H1205" class="connector"/>
+
+<g filter="url(#shadow)">
+  <rect x="1205" y="180" width="150" height="145" rx="22" fill="url(#ok)"/>
+  <text x="1280" y="221" text-anchor="middle" class="box-title">6 · Login</text>
+  <text x="1280" y="252" text-anchor="middle" class="box-sub">Shell remains open</text>
+  <text x="1280" y="279" text-anchor="middle" class="box-sub">Success</text>
+</g>
+
+<g filter="url(#shadow)">
+  <rect x="90" y="405" width="550" height="220" rx="24" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="130" y="447" class="label">Local board checks</text>
+  <text x="130" y="488" class="mono">ip address</text>
+  <text x="130" y="520" class="mono">ip route</text>
+  <text x="130" y="552" class="mono">ss -ltn | grep ':22'</text>
+  <text x="130" y="584" class="mono">sudo systemctl status ssh</text>
+</g>
+
+<g filter="url(#shadow)">
+  <rect x="760" y="405" width="550" height="220" rx="24" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="800" y="447" class="label">If authentication closes the session</text>
+  <text x="800" y="488" class="mono">sudo journalctl -u ssh -b</text>
+  <text x="800" y="520" class="mono">dmesg | grep -i -E 'oom|killed'</text>
+  <text x="800" y="552" class="mono">free -h &amp;&amp; swapon --show</text>
+  <text x="800" y="584" class="note">The login process may be killed by memory pressure.</text>
+</g>
+</svg>

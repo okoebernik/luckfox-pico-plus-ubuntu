@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="740" viewBox="0 0 1400 740" role="img">
+
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#f8fafc"/>
+    <stop offset="100%" stop-color="#eef2f7"/>
+  </linearGradient>
+  <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+    <feDropShadow dx="0" dy="7" stdDeviation="9" flood-color="#0f172a" flood-opacity="0.14"/>
+  </filter>
+  <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+    <path d="M0,0 L12,6 L0,12 Z" fill="#64748b"/>
+  </marker>
+  <style>
+    .title { font: 700 36px Inter, Segoe UI, Arial, sans-serif; fill: #0f172a; }
+    .subtitle { font: 400 17px Inter, Segoe UI, Arial, sans-serif; fill: #475569; }
+    .box-title { font: 700 20px Inter, Segoe UI, Arial, sans-serif; fill: #ffffff; }
+    .box-sub { font: 400 13px Inter, Segoe UI, Arial, sans-serif; fill: rgba(255,255,255,.92); }
+    .label { font: 700 15px Inter, Segoe UI, Arial, sans-serif; fill: #0f172a; }
+    .note { font: 500 13px Inter, Segoe UI, Arial, sans-serif; fill: #64748b; }
+    .mono { font: 600 13px ui-monospace, SFMono-Regular, Consolas, monospace; fill: #334155; }
+    .connector { fill: none; stroke: #64748b; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow); }
+  </style>
+</defs>
+
+<defs>
+  <linearGradient id="failed" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#b91c1c"/><stop offset="100%" stop-color="#991b1b"/></linearGradient>
+  <linearGradient id="status" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#2563eb"/><stop offset="100%" stop-color="#1d4ed8"/></linearGradient>
+  <linearGradient id="journal" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#7c3aed"/><stop offset="100%" stop-color="#6d28d9"/></linearGradient>
+  <linearGradient id="deps" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f97316"/><stop offset="100%" stop-color="#ea580c"/></linearGradient>
+  <linearGradient id="verify" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#059669"/><stop offset="100%" stop-color="#047857"/></linearGradient>
+</defs>
+<rect width="1400" height="740" rx="30" fill="url(#bg)"/>
+<text x="700" y="58" text-anchor="middle" class="title">systemd Diagnostic Workflow</text>
+<text x="700" y="88" text-anchor="middle" class="subtitle">Inspect failed units, service logs, dependencies and persistent state</text>
+
+<g filter="url(#shadow)">
+  <rect x="80" y="180" width="220" height="155" rx="22" fill="url(#failed)"/>
+  <text x="190" y="222" text-anchor="middle" class="box-title">1 · Failed Units</text>
+  <text x="190" y="253" text-anchor="middle" class="box-sub">systemctl --failed</text>
+  <text x="190" y="280" text-anchor="middle" class="box-sub">Find first broken unit</text>
+</g>
+<path d="M300 257 H360" class="connector"/>
+
+<g filter="url(#shadow)">
+  <rect x="360" y="180" width="220" height="155" rx="22" fill="url(#status)"/>
+  <text x="470" y="222" text-anchor="middle" class="box-title">2 · Unit Status</text>
+  <text x="470" y="253" text-anchor="middle" class="box-sub">systemctl status</text>
+  <text x="470" y="280" text-anchor="middle" class="box-sub">Exit code and reason</text>
+</g>
+<path d="M580 257 H640" class="connector"/>
+
+<g filter="url(#shadow)">
+  <rect x="640" y="180" width="220" height="155" rx="22" fill="url(#journal)"/>
+  <text x="750" y="222" text-anchor="middle" class="box-title">3 · Journal</text>
+  <text x="750" y="253" text-anchor="middle" class="box-sub">journalctl -u</text>
+  <text x="750" y="280" text-anchor="middle" class="box-sub">Current boot evidence</text>
+</g>
+<path d="M860 257 H920" class="connector"/>
+
+<g filter="url(#shadow)">
+  <rect x="920" y="180" width="220" height="155" rx="22" fill="url(#deps)"/>
+  <text x="1030" y="222" text-anchor="middle" class="box-title">4 · Dependencies</text>
+  <text x="1030" y="253" text-anchor="middle" class="box-sub">list-dependencies</text>
+  <text x="1030" y="280" text-anchor="middle" class="box-sub">Mounts · network · config</text>
+</g>
+<path d="M1140 257 H1200" class="connector"/>
+
+<g filter="url(#shadow)">
+  <rect x="1200" y="180" width="150" height="155" rx="22" fill="url(#verify)"/>
+  <text x="1275" y="222" text-anchor="middle" class="box-title">5 · Verify</text>
+  <text x="1275" y="253" text-anchor="middle" class="box-sub">Restart or reboot</text>
+  <text x="1275" y="280" text-anchor="middle" class="box-sub">No failures</text>
+</g>
+
+<g filter="url(#shadow)">
+  <rect x="105" y="410" width="560" height="210" rx="24" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="145" y="452" class="label">Core commands</text>
+  <text x="145" y="492" class="mono">sudo systemctl --failed</text>
+  <text x="145" y="524" class="mono">sudo systemctl status &lt;unit&gt; --no-pager</text>
+  <text x="145" y="556" class="mono">sudo journalctl -u &lt;unit&gt; -b --no-pager</text>
+  <text x="145" y="588" class="mono">systemctl list-dependencies &lt;unit&gt;</text>
+</g>
+
+<g filter="url(#shadow)">
+  <rect x="745" y="410" width="550" height="210" rx="24" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="785" y="452" class="label">Low-memory note</text>
+  <text x="785" y="492" class="note">`daemon-reload` can refuse when `/run/systemd`</text>
+  <text x="785" y="524" class="note">has less than its safety reserve. Persistent</text>
+  <text x="785" y="556" class="note">symlink changes can still take effect after a</text>
+  <text x="785" y="588" class="note">controlled reboot.</text>
+</g>
+
+<text x="700" y="680" text-anchor="middle" class="note">A service error may be a dependency, storage or OOM problem rather than a service bug.</text>
+</svg>

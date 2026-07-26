@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="760" viewBox="0 0 1400 760" role="img">
+
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#f8fafc"/>
+    <stop offset="100%" stop-color="#eef2f7"/>
+  </linearGradient>
+  <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+    <feDropShadow dx="0" dy="7" stdDeviation="9" flood-color="#0f172a" flood-opacity="0.14"/>
+  </filter>
+  <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+    <path d="M0,0 L12,6 L0,12 Z" fill="#64748b"/>
+  </marker>
+  <style>
+    .title { font: 700 36px Inter, Segoe UI, Arial, sans-serif; fill: #0f172a; }
+    .subtitle { font: 400 17px Inter, Segoe UI, Arial, sans-serif; fill: #475569; }
+    .box-title { font: 700 20px Inter, Segoe UI, Arial, sans-serif; fill: #ffffff; }
+    .box-sub { font: 400 13px Inter, Segoe UI, Arial, sans-serif; fill: rgba(255,255,255,.92); }
+    .label { font: 700 15px Inter, Segoe UI, Arial, sans-serif; fill: #0f172a; }
+    .note { font: 500 13px Inter, Segoe UI, Arial, sans-serif; fill: #64748b; }
+    .mono { font: 600 13px ui-monospace, SFMono-Regular, Consolas, monospace; fill: #334155; }
+    .connector { fill: none; stroke: #64748b; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow); }
+  </style>
+</defs>
+
+<defs>
+  <linearGradient id="env" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#0ea5e9"/><stop offset="100%" stop-color="#0284c7"/></linearGradient>
+  <linearGradient id="repo" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#2563eb"/><stop offset="100%" stop-color="#1d4ed8"/></linearGradient>
+  <linearGradient id="sdk" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#7c3aed"/><stop offset="100%" stop-color="#6d28d9"/></linearGradient>
+  <linearGradient id="scripts" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f97316"/><stop offset="100%" stop-color="#ea580c"/></linearGradient>
+  <linearGradient id="output" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#059669"/><stop offset="100%" stop-color="#047857"/></linearGradient>
+</defs>
+<rect width="1400" height="760" rx="30" fill="url(#bg)"/>
+<text x="700" y="58" text-anchor="middle" class="title">Build Diagnostics</text>
+<text x="700" y="88" text-anchor="middle" class="subtitle">Validate the host, repository, SDK and generated artifacts in order</text>
+
+<g filter="url(#shadow)">
+  <rect x="70" y="180" width="220" height="155" rx="22" fill="url(#env)"/>
+  <text x="180" y="222" text-anchor="middle" class="box-title">1 · Host Environment</text>
+  <text x="180" y="253" text-anchor="middle" class="box-sub">Ubuntu 22.04</text>
+  <text x="180" y="280" text-anchor="middle" class="box-sub">Disk · clock · PATH</text>
+</g>
+<path d="M290 257 H345" class="connector"/>
+
+<g filter="url(#shadow)">
+  <rect x="345" y="180" width="220" height="155" rx="22" fill="url(#repo)"/>
+  <text x="455" y="222" text-anchor="middle" class="box-title">2 · Repository</text>
+  <text x="455" y="253" text-anchor="middle" class="box-sub">git status</text>
+  <text x="455" y="280" text-anchor="middle" class="box-sub">Permissions · version</text>
+</g>
+<path d="M565 257 H620" class="connector"/>
+
+<g filter="url(#shadow)">
+  <rect x="620" y="180" width="220" height="155" rx="22" fill="url(#sdk)"/>
+  <text x="730" y="222" text-anchor="middle" class="box-title">3 · Luckfox SDK</text>
+  <text x="730" y="253" text-anchor="middle" class="box-sub">Correct board config</text>
+  <text x="730" y="280" text-anchor="middle" class="box-sub">Complete checkout</text>
+</g>
+<path d="M840 257 H895" class="connector"/>
+
+<g filter="url(#shadow)">
+  <rect x="895" y="180" width="220" height="155" rx="22" fill="url(#scripts)"/>
+  <text x="1005" y="222" text-anchor="middle" class="box-title">4 · Build Scripts</text>
+  <text x="1005" y="253" text-anchor="middle" class="box-sub">Executable · ordered</text>
+  <text x="1005" y="280" text-anchor="middle" class="box-sub">Inspect first error</text>
+</g>
+<path d="M1115 257 H1170" class="connector"/>
+
+<g filter="url(#shadow)">
+  <rect x="1170" y="180" width="180" height="155" rx="22" fill="url(#output)"/>
+  <text x="1260" y="222" text-anchor="middle" class="box-title">5 · Output</text>
+  <text x="1260" y="253" text-anchor="middle" class="box-sub">All images present</text>
+  <text x="1260" y="280" text-anchor="middle" class="box-sub">SHA256 passes</text>
+</g>
+
+<g filter="url(#shadow)">
+  <rect x="90" y="420" width="570" height="220" rx="24" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="130" y="462" class="label">Host checks</text>
+  <text x="130" y="502" class="mono">cat /etc/os-release</text>
+  <text x="130" y="534" class="mono">date &amp;&amp; timedatectl status</text>
+  <text x="130" y="566" class="mono">printf '%s
+' "$PATH"</text>
+  <text x="130" y="598" class="mono">df -h .</text>
+</g>
+
+<g filter="url(#shadow)">
+  <rect x="740" y="420" width="570" height="220" rx="24" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="780" y="462" class="label">Repository and output checks</text>
+  <text x="780" y="502" class="mono">git status</text>
+  <text x="780" y="534" class="mono">find scripts -name '*.sh' -maxdepth 1 -type f</text>
+  <text x="780" y="566" class="mono">find output/release -maxdepth 1 -type f</text>
+  <text x="780" y="598" class="mono">sha256sum -c output/release/SHA256SUMS</text>
+</g>
+
+<text x="700" y="700" text-anchor="middle" class="note">The first error in a build log is usually more useful than the final error.</text>
+</svg>

@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="820" viewBox="0 0 1400 820" role="img">
+
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#f8fafc"/>
+    <stop offset="100%" stop-color="#eef2f7"/>
+  </linearGradient>
+  <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+    <feDropShadow dx="0" dy="7" stdDeviation="9" flood-color="#0f172a" flood-opacity="0.14"/>
+  </filter>
+  <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+    <path d="M0,0 L12,6 L0,12 Z" fill="#64748b"/>
+  </marker>
+  <style>
+    .title { font: 700 36px Inter, Segoe UI, Arial, sans-serif; fill: #0f172a; }
+    .subtitle { font: 400 17px Inter, Segoe UI, Arial, sans-serif; fill: #475569; }
+    .box-title { font: 700 20px Inter, Segoe UI, Arial, sans-serif; fill: #ffffff; }
+    .box-sub { font: 400 13px Inter, Segoe UI, Arial, sans-serif; fill: rgba(255,255,255,.92); }
+    .label { font: 700 15px Inter, Segoe UI, Arial, sans-serif; fill: #0f172a; }
+    .note { font: 500 13px Inter, Segoe UI, Arial, sans-serif; fill: #64748b; }
+    .mono { font: 600 13px ui-monospace, SFMono-Regular, Consolas, monospace; fill: #334155; }
+    .connector { fill: none; stroke: #64748b; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow); }
+    .connector-soft { fill: none; stroke: #94a3b8; stroke-width: 3; stroke-dasharray: 8 8; stroke-linecap: round; marker-end: url(#arrow); }
+  </style>
+</defs>
+
+<defs>
+  <linearGradient id="hardware" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#0f172a"/><stop offset="100%" stop-color="#020617"/></linearGradient>
+  <linearGradient id="bootrom" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#475569"/><stop offset="100%" stop-color="#334155"/></linearGradient>
+  <linearGradient id="uboot" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#7c3aed"/><stop offset="100%" stop-color="#6d28d9"/></linearGradient>
+  <linearGradient id="kernel" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#2563eb"/><stop offset="100%" stop-color="#1d4ed8"/></linearGradient>
+  <linearGradient id="systemd" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f97316"/><stop offset="100%" stop-color="#ea580c"/></linearGradient>
+  <linearGradient id="network" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#0ea5e9"/><stop offset="100%" stop-color="#0284c7"/></linearGradient>
+  <linearGradient id="ssh" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#059669"/><stop offset="100%" stop-color="#047857"/></linearGradient>
+</defs>
+<rect width="1400" height="820" rx="30" fill="url(#bg)"/>
+<text x="700" y="58" text-anchor="middle" class="title">Troubleshooting Overview</text>
+<text x="700" y="88" text-anchor="middle" class="subtitle">Locate the first failing layer before changing configuration</text>
+
+<g filter="url(#shadow)">
+  <rect x="500" y="130" width="400" height="78" rx="22" fill="url(#hardware)"/>
+  <text x="700" y="166" text-anchor="middle" class="box-title">Power · Board · microSD · UART</text>
+  <text x="700" y="191" text-anchor="middle" class="box-sub">Physical foundation</text>
+</g>
+<path d="M700 208 V238" class="connector"/>
+
+<g filter="url(#shadow)">
+  <rect x="500" y="238" width="400" height="78" rx="22" fill="url(#bootrom)"/>
+  <text x="700" y="274" text-anchor="middle" class="box-title">BootROM and idblock</text>
+  <text x="700" y="299" text-anchor="middle" class="box-sub">Boot media detection and DDR setup</text>
+</g>
+<path d="M700 316 V346" class="connector"/>
+
+<g filter="url(#shadow)">
+  <rect x="500" y="346" width="400" height="78" rx="22" fill="url(#uboot)"/>
+  <text x="700" y="382" text-anchor="middle" class="box-title">U-Boot and boot.img</text>
+  <text x="700" y="407" text-anchor="middle" class="box-sub">Kernel and Device Tree loading</text>
+</g>
+<path d="M700 424 V454" class="connector"/>
+
+<g filter="url(#shadow)">
+  <rect x="500" y="454" width="400" height="78" rx="22" fill="url(#kernel)"/>
+  <text x="700" y="490" text-anchor="middle" class="box-title">Linux Kernel and RootFS</text>
+  <text x="700" y="515" text-anchor="middle" class="box-sub">Drivers, mounts and memory management</text>
+</g>
+<path d="M700 532 V562" class="connector"/>
+
+<g filter="url(#shadow)">
+  <rect x="500" y="562" width="400" height="78" rx="22" fill="url(#systemd)"/>
+  <text x="700" y="598" text-anchor="middle" class="box-title">Ubuntu Userspace and systemd</text>
+  <text x="700" y="623" text-anchor="middle" class="box-sub">Services, login and swap activation</text>
+</g>
+
+<path d="M590 640 V690 H340" class="connector"/>
+<path d="M810 640 V690 H1060" class="connector"/>
+
+<g filter="url(#shadow)">
+  <rect x="150" y="690" width="380" height="90" rx="22" fill="url(#network)"/>
+  <text x="340" y="730" text-anchor="middle" class="box-title">Network</text>
+  <text x="340" y="757" text-anchor="middle" class="box-sub">Link · DHCP · route · DNS</text>
+</g>
+
+<g filter="url(#shadow)">
+  <rect x="870" y="690" width="380" height="90" rx="22" fill="url(#ssh)"/>
+  <text x="1060" y="730" text-anchor="middle" class="box-title">SSH and Applications</text>
+  <text x="1060" y="757" text-anchor="middle" class="box-sub">Port 22 · authentication · workload</text>
+</g>
+
+<g filter="url(#shadow)">
+  <rect x="65" y="175" width="320" height="170" rx="22" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="100" y="216" class="label">First useful evidence</text>
+  <text x="100" y="252" class="note">• Power LEDs and current draw</text>
+  <text x="100" y="282" class="note">• Complete UART boot log</text>
+  <text x="100" y="312" class="note">• Highest visible boot stage</text>
+</g>
+
+<g filter="url(#shadow)">
+  <rect x="1015" y="175" width="320" height="170" rx="22" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="1050" y="216" class="label">Core rule</text>
+  <text x="1050" y="252" class="note">Do not debug SSH while the</text>
+  <text x="1050" y="282" class="note">kernel or network layer is</text>
+  <text x="1050" y="312" class="note">still unproven.</text>
+</g>
+</svg>

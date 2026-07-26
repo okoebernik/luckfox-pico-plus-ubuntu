@@ -1,0 +1,138 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="980" viewBox="0 0 1400 980" role="img">
+
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#f8fafc"/>
+    <stop offset="100%" stop-color="#eef2f7"/>
+  </linearGradient>
+  <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+    <feDropShadow dx="0" dy="7" stdDeviation="9" flood-color="#0f172a" flood-opacity="0.14"/>
+  </filter>
+  <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+    <path d="M0,0 L12,6 L0,12 Z" fill="#64748b"/>
+  </marker>
+  <style>
+    .title { font: 700 36px Inter, Segoe UI, Arial, sans-serif; fill: #0f172a; }
+    .subtitle { font: 400 17px Inter, Segoe UI, Arial, sans-serif; fill: #475569; }
+    .box-title { font: 700 20px Inter, Segoe UI, Arial, sans-serif; fill: #ffffff; }
+    .box-sub { font: 400 13px Inter, Segoe UI, Arial, sans-serif; fill: rgba(255,255,255,.92); }
+    .label { font: 700 15px Inter, Segoe UI, Arial, sans-serif; fill: #0f172a; }
+    .note { font: 500 13px Inter, Segoe UI, Arial, sans-serif; fill: #64748b; }
+    .mono { font: 600 13px ui-monospace, SFMono-Regular, Consolas, monospace; fill: #334155; }
+    .connector { fill: none; stroke: #64748b; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow); }
+    .connector-soft { fill: none; stroke: #94a3b8; stroke-width: 3; stroke-dasharray: 8 8; stroke-linecap: round; marker-end: url(#arrow); }
+  </style>
+</defs>
+
+<defs>
+  <linearGradient id="q" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#2563eb"/><stop offset="100%" stop-color="#1d4ed8"/></linearGradient>
+  <linearGradient id="bad" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f97316"/><stop offset="100%" stop-color="#ea580c"/></linearGradient>
+  <linearGradient id="fix" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#7c3aed"/><stop offset="100%" stop-color="#6d28d9"/></linearGradient>
+  <linearGradient id="ok" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#059669"/><stop offset="100%" stop-color="#047857"/></linearGradient>
+</defs>
+<rect width="1400" height="980" rx="30" fill="url(#bg)"/>
+<text x="700" y="58" text-anchor="middle" class="title">Boot Decision Tree</text>
+<text x="700" y="88" text-anchor="middle" class="subtitle">Follow the first missing milestone</text>
+
+<g filter="url(#shadow)">
+  <rect x="570" y="120" width="260" height="80" rx="22" fill="url(#q)"/>
+  <text x="700" y="156" text-anchor="middle" class="box-title">Power Present?</text>
+  <text x="700" y="181" text-anchor="middle" class="box-sub">LEDs or measurable current</text>
+</g>
+
+<path d="M570 160 H350" class="connector-soft"/>
+<g filter="url(#shadow)">
+  <rect x="75" y="120" width="275" height="80" rx="22" fill="url(#bad)"/>
+  <text x="212" y="156" text-anchor="middle" class="box-title">Check Power Path</text>
+  <text x="212" y="181" text-anchor="middle" class="box-sub">Supply · cable · connector</text>
+</g>
+
+<path d="M700 200 V250" class="connector"/>
+<g filter="url(#shadow)">
+  <rect x="570" y="250" width="260" height="80" rx="22" fill="url(#q)"/>
+  <text x="700" y="286" text-anchor="middle" class="box-title">UART Output?</text>
+  <text x="700" y="311" text-anchor="middle" class="box-sub">UART2 · 115200 8N1</text>
+</g>
+
+<path d="M570 290 H350" class="connector-soft"/>
+<g filter="url(#shadow)">
+  <rect x="75" y="250" width="275" height="80" rx="22" fill="url(#fix)"/>
+  <text x="212" y="286" text-anchor="middle" class="box-title">Check UART</text>
+  <text x="212" y="311" text-anchor="middle" class="box-sub">RX/TX · GND · adapter · baud</text>
+</g>
+
+<path d="M700 330 V380" class="connector"/>
+<g filter="url(#shadow)">
+  <rect x="570" y="380" width="260" height="80" rx="22" fill="url(#q)"/>
+  <text x="700" y="416" text-anchor="middle" class="box-title">U-Boot Banner?</text>
+  <text x="700" y="441" text-anchor="middle" class="box-sub">Bootloader executes</text>
+</g>
+
+<path d="M570 420 H350" class="connector-soft"/>
+<g filter="url(#shadow)">
+  <rect x="75" y="380" width="275" height="80" rx="22" fill="url(#fix)"/>
+  <text x="212" y="416" text-anchor="middle" class="box-title">Recover Boot Chain</text>
+  <text x="212" y="441" text-anchor="middle" class="box-sub">idblock.img · uboot.img</text>
+</g>
+
+<path d="M700 460 V510" class="connector"/>
+<g filter="url(#shadow)">
+  <rect x="570" y="510" width="260" height="80" rx="22" fill="url(#q)"/>
+  <text x="700" y="546" text-anchor="middle" class="box-title">Kernel Starts?</text>
+  <text x="700" y="571" text-anchor="middle" class="box-sub">"Starting kernel ..."</text>
+</g>
+
+<path d="M570 550 H350" class="connector-soft"/>
+<g filter="url(#shadow)">
+  <rect x="75" y="510" width="275" height="80" rx="22" fill="url(#fix)"/>
+  <text x="212" y="546" text-anchor="middle" class="box-title">Verify boot.img</text>
+  <text x="212" y="571" text-anchor="middle" class="box-sub">Checksum · Device Tree · reflash</text>
+</g>
+
+<path d="M700 590 V640" class="connector"/>
+<g filter="url(#shadow)">
+  <rect x="570" y="640" width="260" height="80" rx="22" fill="url(#q)"/>
+  <text x="700" y="676" text-anchor="middle" class="box-title">RootFS Mounted?</text>
+  <text x="700" y="701" text-anchor="middle" class="box-sub">No mount panic or ext4 error</text>
+</g>
+
+<path d="M570 680 H350" class="connector-soft"/>
+<g filter="url(#shadow)">
+  <rect x="75" y="640" width="275" height="80" rx="22" fill="url(#fix)"/>
+  <text x="212" y="676" text-anchor="middle" class="box-title">Recover RootFS</text>
+  <text x="212" y="701" text-anchor="middle" class="box-sub">rootfs.img · fsck · cmdline</text>
+</g>
+
+<path d="M700 720 V770" class="connector"/>
+<g filter="url(#shadow)">
+  <rect x="570" y="770" width="260" height="80" rx="22" fill="url(#q)"/>
+  <text x="700" y="806" text-anchor="middle" class="box-title">Login Prompt?</text>
+  <text x="700" y="831" text-anchor="middle" class="box-sub">systemd and getty operational</text>
+</g>
+
+<path d="M570 810 H350" class="connector-soft"/>
+<g filter="url(#shadow)">
+  <rect x="75" y="770" width="275" height="80" rx="22" fill="url(#fix)"/>
+  <text x="212" y="806" text-anchor="middle" class="box-title">Userspace Diagnosis</text>
+  <text x="212" y="831" text-anchor="middle" class="box-sub">systemd · swap · OOM · shell</text>
+</g>
+
+<path d="M700 850 V895" class="connector"/>
+<g filter="url(#shadow)">
+  <rect x="570" y="895" width="260" height="62" rx="22" fill="url(#ok)"/>
+  <text x="700" y="934" text-anchor="middle" class="box-title">Boot Successful</text>
+</g>
+
+<g filter="url(#shadow)">
+  <rect x="1000" y="260" width="310" height="350" rx="24" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="1040" y="302" class="label">Capture before reflashing</text>
+  <text x="1040" y="344" class="note">• Complete UART output</text>
+  <text x="1040" y="378" class="note">• Last successful milestone</text>
+  <text x="1040" y="412" class="note">• SHA256 verification</text>
+  <text x="1040" y="446" class="note">• SD card and release version</text>
+  <text x="1040" y="480" class="note">• Exact power-cycle behavior</text>
+  <text x="1040" y="532" class="note">Preserving evidence avoids</text>
+  <text x="1040" y="562" class="note">turning a diagnosable failure</text>
+  <text x="1040" y="592" class="note">into an unknown one.</text>
+</g>
+</svg>

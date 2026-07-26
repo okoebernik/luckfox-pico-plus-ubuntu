@@ -1,96 +1,92 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="560" viewBox="0 0 1400 560" role="img" aria-labelledby="title desc">
-  <title id="title">Luckfox Ubuntu maintenance workflow</title>
-  <desc id="desc">Maintenance workflow showing backup, baseline capture, update, reboot, verification and rollback if required.</desc>
-  
-  <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#f8fafc"/>
-      <stop offset="100%" stop-color="#eef2f7"/>
-    </linearGradient>
-    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="7" stdDeviation="9" flood-color="#0f172a" flood-opacity="0.14"/>
-    </filter>
-    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
-      <path d="M0,0 L12,6 L0,12 Z" fill="#64748b"/>
-    </marker>
-    <style>
-      .title { font: 700 36px Inter, Segoe UI, Arial, sans-serif; fill: #0f172a; }
-      .subtitle { font: 400 17px Inter, Segoe UI, Arial, sans-serif; fill: #475569; }
-      .box-title { font: 700 20px Inter, Segoe UI, Arial, sans-serif; fill: #ffffff; }
-      .box-sub { font: 400 13px Inter, Segoe UI, Arial, sans-serif; fill: rgba(255,255,255,.92); }
-      .label { font: 700 15px Inter, Segoe UI, Arial, sans-serif; fill: #0f172a; }
-      .note { font: 500 13px Inter, Segoe UI, Arial, sans-serif; fill: #64748b; }
-      .mono { font: 600 13px ui-monospace, SFMono-Regular, Consolas, monospace; fill: #334155; }
-      .connector { fill: none; stroke: #64748b; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow); }
-      .connector-soft { fill: none; stroke: #94a3b8; stroke-width: 3; stroke-dasharray: 8 8; stroke-linecap: round; marker-end: url(#arrow); }
-    </style>
-  </defs>
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="620" viewBox="0 0 1400 620" role="img">
 
-  <defs>
-    <linearGradient id="backup" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#7c3aed"/><stop offset="100%" stop-color="#6d28d9"/></linearGradient>
-    <linearGradient id="baseline" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#0ea5e9"/><stop offset="100%" stop-color="#0284c7"/></linearGradient>
-    <linearGradient id="update" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f97316"/><stop offset="100%" stop-color="#ea580c"/></linearGradient>
-    <linearGradient id="reboot" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#475569"/><stop offset="100%" stop-color="#334155"/></linearGradient>
-    <linearGradient id="verify" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#059669"/><stop offset="100%" stop-color="#047857"/></linearGradient>
-    <linearGradient id="rollback" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#b91c1c"/><stop offset="100%" stop-color="#991b1b"/></linearGradient>
-  </defs>
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#f8fafc"/>
+    <stop offset="100%" stop-color="#eef2f7"/>
+  </linearGradient>
+  <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+    <feDropShadow dx="0" dy="7" stdDeviation="9" flood-color="#0f172a" flood-opacity="0.14"/>
+  </filter>
+  <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+    <path d="M0,0 L12,6 L0,12 Z" fill="#64748b"/>
+  </marker>
+  <style>
+    .title { font: 700 36px Inter, Segoe UI, Arial, sans-serif; fill: #0f172a; }
+    .subtitle { font: 400 17px Inter, Segoe UI, Arial, sans-serif; fill: #475569; }
+    .box-title { font: 700 20px Inter, Segoe UI, Arial, sans-serif; fill: #ffffff; }
+    .box-sub { font: 400 13px Inter, Segoe UI, Arial, sans-serif; fill: rgba(255,255,255,.92); }
+    .label { font: 700 15px Inter, Segoe UI, Arial, sans-serif; fill: #0f172a; }
+    .note { font: 500 13px Inter, Segoe UI, Arial, sans-serif; fill: #64748b; }
+    .mono { font: 600 13px ui-monospace, SFMono-Regular, Consolas, monospace; fill: #334155; }
+    .connector { fill: none; stroke: #64748b; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow); }
+  </style>
+</defs>
 
-  <rect width="1400" height="560" rx="30" fill="url(#bg)"/>
-  <text x="700" y="58" text-anchor="middle" class="title">Maintenance Workflow</text>
-  <text x="700" y="88" text-anchor="middle" class="subtitle">Make every update reversible and measurable</text>
+<defs>
+  <linearGradient id="backup" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#7c3aed"/><stop offset="100%" stop-color="#6d28d9"/></linearGradient>
+  <linearGradient id="baseline" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#0ea5e9"/><stop offset="100%" stop-color="#0284c7"/></linearGradient>
+  <linearGradient id="change" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f97316"/><stop offset="100%" stop-color="#ea580c"/></linearGradient>
+  <linearGradient id="reboot" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#475569"/><stop offset="100%" stop-color="#334155"/></linearGradient>
+  <linearGradient id="verify" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#059669"/><stop offset="100%" stop-color="#047857"/></linearGradient>
+  <linearGradient id="rollback" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#b91c1c"/><stop offset="100%" stop-color="#991b1b"/></linearGradient>
+</defs>
+<rect width="1400" height="620" rx="30" fill="url(#bg)"/>
+<text x="700" y="58" text-anchor="middle" class="title">Controlled Maintenance Workflow</text>
+<text x="700" y="88" text-anchor="middle" class="subtitle">Keep every update measurable, reversible and observable through UART</text>
 
-  <g filter="url(#shadow)">
-    <rect x="55" y="180" width="180" height="155" rx="22" fill="url(#backup)"/>
-    <text x="145" y="220" text-anchor="middle" class="box-title">Backup</text>
-    <text x="145" y="252" text-anchor="middle" class="box-sub">Config · data</text>
-    <text x="145" y="280" text-anchor="middle" class="box-sub">Known-good image</text>
-  </g>
-  <path d="M235 257 H285" class="connector"/>
+<g filter="url(#shadow)">
+  <rect x="55" y="180" width="180" height="155" rx="22" fill="url(#backup)"/>
+  <text x="145" y="222" text-anchor="middle" class="box-title">Backup</text>
+  <text x="145" y="253" text-anchor="middle" class="box-sub">Config and data</text>
+  <text x="145" y="280" text-anchor="middle" class="box-sub">Known-good image</text>
+</g>
+<path d="M235 257 H285" class="connector"/>
 
-  <g filter="url(#shadow)">
-    <rect x="285" y="180" width="180" height="155" rx="22" fill="url(#baseline)"/>
-    <text x="375" y="220" text-anchor="middle" class="box-title">Baseline</text>
-    <text x="375" y="252" text-anchor="middle" class="box-sub">Memory · services</text>
-    <text x="375" y="280" text-anchor="middle" class="box-sub">Disk · network</text>
-  </g>
-  <path d="M465 257 H515" class="connector"/>
+<g filter="url(#shadow)">
+  <rect x="285" y="180" width="180" height="155" rx="22" fill="url(#baseline)"/>
+  <text x="375" y="222" text-anchor="middle" class="box-title">Baseline</text>
+  <text x="375" y="253" text-anchor="middle" class="box-sub">Memory · storage</text>
+  <text x="375" y="280" text-anchor="middle" class="box-sub">Services · network</text>
+</g>
+<path d="M465 257 H515" class="connector"/>
 
-  <g filter="url(#shadow)">
-    <rect x="515" y="180" width="180" height="155" rx="22" fill="url(#update)"/>
-    <text x="605" y="220" text-anchor="middle" class="box-title">Update</text>
-    <text x="605" y="252" text-anchor="middle" class="box-sub">One change at a time</text>
-    <text x="605" y="280" text-anchor="middle" class="box-sub">Watch UART</text>
-  </g>
-  <path d="M695 257 H745" class="connector"/>
+<g filter="url(#shadow)">
+  <rect x="515" y="180" width="180" height="155" rx="22" fill="url(#change)"/>
+  <text x="605" y="222" text-anchor="middle" class="box-title">One Change</text>
+  <text x="605" y="253" text-anchor="middle" class="box-sub">Package or config</text>
+  <text x="605" y="280" text-anchor="middle" class="box-sub">No unrelated edits</text>
+</g>
+<path d="M695 257 H745" class="connector"/>
 
-  <g filter="url(#shadow)">
-    <rect x="745" y="180" width="180" height="155" rx="22" fill="url(#reboot)"/>
-    <text x="835" y="220" text-anchor="middle" class="box-title">Reboot</text>
-    <text x="835" y="252" text-anchor="middle" class="box-sub">Clean startup</text>
-    <text x="835" y="280" text-anchor="middle" class="box-sub">Capture boot log</text>
-  </g>
-  <path d="M925 257 H975" class="connector"/>
+<g filter="url(#shadow)">
+  <rect x="745" y="180" width="180" height="155" rx="22" fill="url(#reboot)"/>
+  <text x="835" y="222" text-anchor="middle" class="box-title">Reboot</text>
+  <text x="835" y="253" text-anchor="middle" class="box-sub">UART attached</text>
+  <text x="835" y="280" text-anchor="middle" class="box-sub">Capture startup</text>
+</g>
+<path d="M925 257 H975" class="connector"/>
 
-  <g filter="url(#shadow)">
-    <rect x="975" y="180" width="180" height="155" rx="22" fill="url(#verify)"/>
-    <text x="1065" y="220" text-anchor="middle" class="box-title">Verify</text>
-    <text x="1065" y="252" text-anchor="middle" class="box-sub">Swap · SSH · services</text>
-    <text x="1065" y="280" text-anchor="middle" class="box-sub">Compare baseline</text>
-  </g>
+<g filter="url(#shadow)">
+  <rect x="975" y="180" width="180" height="155" rx="22" fill="url(#verify)"/>
+  <text x="1065" y="222" text-anchor="middle" class="box-title">Verify</text>
+  <text x="1065" y="253" text-anchor="middle" class="box-sub">Swap · SSH</text>
+  <text x="1065" y="280" text-anchor="middle" class="box-sub">Compare baseline</text>
+</g>
+<path d="M1155 257 H1205" class="connector"/>
 
-  <path d="M1155 257 H1205" class="connector"/>
-  <g filter="url(#shadow)">
-    <rect x="1205" y="180" width="150" height="155" rx="22" fill="url(#rollback)"/>
-    <text x="1280" y="220" text-anchor="middle" class="box-title">Rollback</text>
-    <text x="1280" y="252" text-anchor="middle" class="box-sub">If checks fail</text>
-    <text x="1280" y="280" text-anchor="middle" class="box-sub">Restore known good</text>
-  </g>
+<g filter="url(#shadow)">
+  <rect x="1205" y="180" width="150" height="155" rx="22" fill="url(#rollback)"/>
+  <text x="1280" y="222" text-anchor="middle" class="box-title">Rollback</text>
+  <text x="1280" y="253" text-anchor="middle" class="box-sub">If checks fail</text>
+  <text x="1280" y="280" text-anchor="middle" class="box-sub">Restore known good</text>
+</g>
 
-  <g filter="url(#shadow)">
-    <rect x="225" y="405" width="950" height="76" rx="22" fill="#ffffff" stroke="#cbd5e1"/>
-    <text x="265" y="435" class="note">Never combine:</text>
-    <text x="265" y="460" class="mono">major package update + configuration change + kernel replacement</text>
-  </g>
+<g filter="url(#shadow)">
+  <rect x="190" y="405" width="1020" height="125" rx="24" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="230" y="447" class="label">Recommended baseline</text>
+  <text x="230" y="486" class="mono">uname -a · free -h · swapon --show · df -h · ip address · systemctl --failed</text>
+</g>
 
-  <text x="700" y="520" text-anchor="middle" class="note">Small, reversible changes are easier to diagnose on low-memory hardware.</text>
+<text x="700" y="580" text-anchor="middle" class="note">Do not combine a major package update, kernel replacement and configuration migration in one step.</text>
 </svg>
