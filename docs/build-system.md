@@ -130,35 +130,18 @@ Only the userspace is replaced.
 
 ---
 
-# Build Pipeline
+## Build Pipeline
 
-The build consists of six independent stages.
+<p align="center">
+  <img src="images/luckfox-build-pipeline-quick-reference.svg"
+       alt="Luckfox Ubuntu Build Pipeline Quick Reference"
+       width="100%">
+</p>
 
-```
-optimize-rootfs.sh
+The complete build is orchestrated by:
 
-↓
-
-install-kernel-modules.sh
-
-↓
-
-create-rootfs-image.sh
-
-↓
-
-collect-firmware.sh
-
-↓
-
-create-flash-folder.sh
-
-↓
-
-create-release-metadata.sh
-```
-
-Every stage can be executed individually.
+```bash
+./scripts/build-all.sh
 
 ---
 
