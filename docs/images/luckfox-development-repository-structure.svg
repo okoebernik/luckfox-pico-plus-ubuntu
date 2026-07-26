@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="760" viewBox="0 0 1400 760" role="img">
+
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#f8fafc"/>
+    <stop offset="100%" stop-color="#eef2f7"/>
+  </linearGradient>
+  <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+    <feDropShadow dx="0" dy="7" stdDeviation="9" flood-color="#0f172a" flood-opacity="0.14"/>
+  </filter>
+  <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+    <path d="M0,0 L12,6 L0,12 Z" fill="#64748b"/>
+  </marker>
+  <style>
+    .title { font: 700 36px Inter, Segoe UI, Arial, sans-serif; fill: #0f172a; }
+    .subtitle { font: 400 17px Inter, Segoe UI, Arial, sans-serif; fill: #475569; }
+    .box-title { font: 700 20px Inter, Segoe UI, Arial, sans-serif; fill: #ffffff; }
+    .box-sub { font: 400 13px Inter, Segoe UI, Arial, sans-serif; fill: rgba(255,255,255,.92); }
+    .label { font: 700 15px Inter, Segoe UI, Arial, sans-serif; fill: #0f172a; }
+    .note { font: 500 13px Inter, Segoe UI, Arial, sans-serif; fill: #64748b; }
+    .mono { font: 600 13px ui-monospace, SFMono-Regular, Consolas, monospace; fill: #334155; }
+    .connector { fill: none; stroke: #64748b; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow); }
+    .connector-soft { fill: none; stroke: #94a3b8; stroke-width: 3; stroke-dasharray: 8 8; stroke-linecap: round; marker-end: url(#arrow); }
+  </style>
+</defs>
+
+<defs>
+  <linearGradient id="root" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#0f172a"/><stop offset="100%" stop-color="#020617"/></linearGradient>
+  <linearGradient id="source" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#2563eb"/><stop offset="100%" stop-color="#1d4ed8"/></linearGradient>
+  <linearGradient id="docs" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#7c3aed"/><stop offset="100%" stop-color="#6d28d9"/></linearGradient>
+  <linearGradient id="generated" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#059669"/><stop offset="100%" stop-color="#047857"/></linearGradient>
+</defs>
+<rect width="1400" height="760" rx="30" fill="url(#bg)"/>
+<text x="700" y="58" text-anchor="middle" class="title">Developer Repository Structure</text>
+<text x="700" y="88" text-anchor="middle" class="subtitle">Version-controlled source and generated artifacts remain clearly separated</text>
+
+<g filter="url(#shadow)">
+  <rect x="480" y="125" width="440" height="85" rx="22" fill="url(#root)"/>
+  <text x="700" y="165" text-anchor="middle" class="box-title">luckfox-pico-plus-ubuntu/</text>
+  <text x="700" y="191" text-anchor="middle" class="box-sub">Project root</text>
+</g>
+
+<g filter="url(#shadow)">
+  <rect x="65" y="285" width="230" height="125" rx="22" fill="url(#source)"/>
+  <text x="180" y="328" text-anchor="middle" class="box-title">config/</text>
+  <text x="180" y="358" text-anchor="middle" class="box-sub">Project defaults</text>
+  <text x="180" y="384" text-anchor="middle" class="box-sub">Image sizes</text>
+
+  <rect x="325" y="285" width="230" height="125" rx="22" fill="url(#source)"/>
+  <text x="440" y="328" text-anchor="middle" class="box-title">scripts/</text>
+  <text x="440" y="358" text-anchor="middle" class="box-sub">Build automation</text>
+  <text x="440" y="384" text-anchor="middle" class="box-sub">Release tooling</text>
+
+  <rect x="585" y="285" width="230" height="125" rx="22" fill="url(#docs)"/>
+  <text x="700" y="328" text-anchor="middle" class="box-title">docs/</text>
+  <text x="700" y="358" text-anchor="middle" class="box-sub">Guides · diagrams</text>
+  <text x="700" y="384" text-anchor="middle" class="box-sub">Engineering notes</text>
+
+  <rect x="845" y="285" width="230" height="125" rx="22" fill="url(#source)"/>
+  <text x="960" y="328" text-anchor="middle" class="box-title">patches/</text>
+  <text x="960" y="358" text-anchor="middle" class="box-sub">SDK changes</text>
+  <text x="960" y="384" text-anchor="middle" class="box-sub">Reproducible fixes</text>
+
+  <rect x="1105" y="285" width="230" height="125" rx="22" fill="url(#source)"/>
+  <text x="1220" y="328" text-anchor="middle" class="box-title">sdk/</text>
+  <text x="1220" y="358" text-anchor="middle" class="box-sub">Official Luckfox SDK</text>
+  <text x="1220" y="384" text-anchor="middle" class="box-sub">Vendor BSP</text>
+</g>
+
+<path d="M700 210 V250 H180 V285" class="connector"/>
+<path d="M700 210 V250 H440 V285" class="connector"/>
+<path d="M700 210 V250 H700 V285" class="connector"/>
+<path d="M700 210 V250 H960 V285" class="connector"/>
+<path d="M700 210 V250 H1220 V285" class="connector"/>
+
+<g filter="url(#shadow)">
+  <rect x="235" y="505" width="300" height="130" rx="22" fill="url(#generated)"/>
+  <text x="385" y="548" text-anchor="middle" class="box-title">rootfs/</text>
+  <text x="385" y="578" text-anchor="middle" class="box-sub">Generated Ubuntu tree</text>
+  <text x="385" y="604" text-anchor="middle" class="box-sub">Not committed to Git</text>
+
+  <rect x="550" y="505" width="300" height="130" rx="22" fill="url(#generated)"/>
+  <text x="700" y="548" text-anchor="middle" class="box-title">output/</text>
+  <text x="700" y="578" text-anchor="middle" class="box-sub">Build logs · images</text>
+  <text x="700" y="604" text-anchor="middle" class="box-sub">Release artifacts</text>
+
+  <rect x="865" y="505" width="300" height="130" rx="22" fill="#475569"/>
+  <text x="1015" y="548" text-anchor="middle" class="box-title">README · VERSION · LICENSE</text>
+  <text x="1015" y="578" text-anchor="middle" class="box-sub">Project metadata</text>
+  <text x="1015" y="604" text-anchor="middle" class="box-sub">Community files</text>
+</g>
+
+<path d="M440 410 V465 H385 V505" class="connector"/>
+<path d="M440 410 V465 H700 V505" class="connector"/>
+<path d="M700 410 V465 H1015 V505" class="connector"/>
+
+<text x="700" y="705" text-anchor="middle" class="note">Generated files belong in rootfs/ and output/; reproducible source belongs in Git.</text>
+</svg>

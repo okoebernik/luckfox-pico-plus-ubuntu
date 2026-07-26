@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="700" viewBox="0 0 1400 700" role="img">
+
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#f8fafc"/>
+    <stop offset="100%" stop-color="#eef2f7"/>
+  </linearGradient>
+  <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+    <feDropShadow dx="0" dy="7" stdDeviation="9" flood-color="#0f172a" flood-opacity="0.14"/>
+  </filter>
+  <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+    <path d="M0,0 L12,6 L0,12 Z" fill="#64748b"/>
+  </marker>
+  <style>
+    .title { font: 700 36px Inter, Segoe UI, Arial, sans-serif; fill: #0f172a; }
+    .subtitle { font: 400 17px Inter, Segoe UI, Arial, sans-serif; fill: #475569; }
+    .box-title { font: 700 20px Inter, Segoe UI, Arial, sans-serif; fill: #ffffff; }
+    .box-sub { font: 400 13px Inter, Segoe UI, Arial, sans-serif; fill: rgba(255,255,255,.92); }
+    .label { font: 700 15px Inter, Segoe UI, Arial, sans-serif; fill: #0f172a; }
+    .note { font: 500 13px Inter, Segoe UI, Arial, sans-serif; fill: #64748b; }
+    .mono { font: 600 13px ui-monospace, SFMono-Regular, Consolas, monospace; fill: #334155; }
+    .connector { fill: none; stroke: #64748b; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow); }
+    .connector-soft { fill: none; stroke: #94a3b8; stroke-width: 3; stroke-dasharray: 8 8; stroke-linecap: round; marker-end: url(#arrow); }
+  </style>
+</defs>
+
+<defs>
+  <linearGradient id="freeze" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#475569"/><stop offset="100%" stop-color="#334155"/></linearGradient>
+  <linearGradient id="build" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#2563eb"/><stop offset="100%" stop-color="#1d4ed8"/></linearGradient>
+  <linearGradient id="test" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f97316"/><stop offset="100%" stop-color="#ea580c"/></linearGradient>
+  <linearGradient id="meta" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#7c3aed"/><stop offset="100%" stop-color="#6d28d9"/></linearGradient>
+  <linearGradient id="tag" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#0ea5e9"/><stop offset="100%" stop-color="#0284c7"/></linearGradient>
+  <linearGradient id="publish" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#059669"/><stop offset="100%" stop-color="#047857"/></linearGradient>
+</defs>
+<rect width="1400" height="700" rx="30" fill="url(#bg)"/>
+<text x="700" y="58" text-anchor="middle" class="title">Release Process</text>
+<text x="700" y="88" text-anchor="middle" class="subtitle">A release is a verified source state plus reproducible firmware artifacts</text>
+
+<g filter="url(#shadow)">
+  <rect x="45" y="180" width="185" height="165" rx="22" fill="url(#freeze)"/>
+  <text x="137" y="222" text-anchor="middle" class="box-title">Freeze</text>
+  <text x="137" y="253" text-anchor="middle" class="box-sub">Clean main branch</text>
+  <text x="137" y="280" text-anchor="middle" class="box-sub">Version selected</text>
+  <text x="137" y="307" text-anchor="middle" class="box-sub">No unrelated changes</text>
+</g>
+<path d="M230 262 H275" class="connector"/>
+
+<g filter="url(#shadow)">
+  <rect x="275" y="180" width="185" height="165" rx="22" fill="url(#build)"/>
+  <text x="367" y="222" text-anchor="middle" class="box-title">Clean Build</text>
+  <text x="367" y="253" text-anchor="middle" class="box-sub">build-all.sh</text>
+  <text x="367" y="280" text-anchor="middle" class="box-sub">Fresh artifacts</text>
+  <text x="367" y="307" text-anchor="middle" class="box-sub">No stale output</text>
+</g>
+<path d="M460 262 H505" class="connector"/>
+
+<g filter="url(#shadow)">
+  <rect x="505" y="180" width="185" height="165" rx="22" fill="url(#test)"/>
+  <text x="597" y="222" text-anchor="middle" class="box-title">Hardware Test</text>
+  <text x="597" y="253" text-anchor="middle" class="box-sub">Flash · boot · SSH</text>
+  <text x="597" y="280" text-anchor="middle" class="box-sub">Memory · storage</text>
+  <text x="597" y="307" text-anchor="middle" class="box-sub">Clean reboot</text>
+</g>
+<path d="M690 262 H735" class="connector"/>
+
+<g filter="url(#shadow)">
+  <rect x="735" y="180" width="185" height="165" rx="22" fill="url(#meta)"/>
+  <text x="827" y="222" text-anchor="middle" class="box-title">Metadata</text>
+  <text x="827" y="253" text-anchor="middle" class="box-sub">VERSION · manifest</text>
+  <text x="827" y="280" text-anchor="middle" class="box-sub">SHA256SUMS</text>
+  <text x="827" y="307" text-anchor="middle" class="box-sub">Release notes</text>
+</g>
+<path d="M920 262 H965" class="connector"/>
+
+<g filter="url(#shadow)">
+  <rect x="965" y="180" width="185" height="165" rx="22" fill="url(#tag)"/>
+  <text x="1057" y="222" text-anchor="middle" class="box-title">Tag</text>
+  <text x="1057" y="253" text-anchor="middle" class="box-sub">Annotated Git tag</text>
+  <text x="1057" y="280" text-anchor="middle" class="box-sub">Commit recorded</text>
+  <text x="1057" y="307" text-anchor="middle" class="box-sub">Push tag</text>
+</g>
+<path d="M1150 262 H1195" class="connector"/>
+
+<g filter="url(#shadow)">
+  <rect x="1195" y="180" width="160" height="165" rx="22" fill="url(#publish)"/>
+  <text x="1275" y="222" text-anchor="middle" class="box-title">Publish</text>
+  <text x="1275" y="253" text-anchor="middle" class="box-sub">GitHub Release</text>
+  <text x="1275" y="280" text-anchor="middle" class="box-sub">Artifacts · docs</text>
+  <text x="1275" y="307" text-anchor="middle" class="box-sub">Known limitations</text>
+</g>
+
+<g filter="url(#shadow)">
+  <rect x="130" y="420" width="1140" height="160" rx="24" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="170" y="462" class="label">Release identity</text>
+  <text x="170" y="502" class="mono">Git commit + annotated tag + VERSION + manifest.txt + SHA256SUMS</text>
+  <text x="170" y="538" class="note">All published images should be traceable back to exactly one source state.</text>
+</g>
+
+<text x="700" y="640" text-anchor="middle" class="note">Do not tag a release before the exact packaged artifacts have passed the hardware test.</text>
+</svg>

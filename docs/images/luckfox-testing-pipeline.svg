@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="690" viewBox="0 0 1400 690" role="img">
+
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#f8fafc"/>
+    <stop offset="100%" stop-color="#eef2f7"/>
+  </linearGradient>
+  <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+    <feDropShadow dx="0" dy="7" stdDeviation="9" flood-color="#0f172a" flood-opacity="0.14"/>
+  </filter>
+  <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+    <path d="M0,0 L12,6 L0,12 Z" fill="#64748b"/>
+  </marker>
+  <style>
+    .title { font: 700 36px Inter, Segoe UI, Arial, sans-serif; fill: #0f172a; }
+    .subtitle { font: 400 17px Inter, Segoe UI, Arial, sans-serif; fill: #475569; }
+    .box-title { font: 700 20px Inter, Segoe UI, Arial, sans-serif; fill: #ffffff; }
+    .box-sub { font: 400 13px Inter, Segoe UI, Arial, sans-serif; fill: rgba(255,255,255,.92); }
+    .label { font: 700 15px Inter, Segoe UI, Arial, sans-serif; fill: #0f172a; }
+    .note { font: 500 13px Inter, Segoe UI, Arial, sans-serif; fill: #64748b; }
+    .mono { font: 600 13px ui-monospace, SFMono-Regular, Consolas, monospace; fill: #334155; }
+    .connector { fill: none; stroke: #64748b; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow); }
+    .connector-soft { fill: none; stroke: #94a3b8; stroke-width: 3; stroke-dasharray: 8 8; stroke-linecap: round; marker-end: url(#arrow); }
+  </style>
+</defs>
+
+<defs>
+  <linearGradient id="static" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#0ea5e9"/><stop offset="100%" stop-color="#0284c7"/></linearGradient>
+  <linearGradient id="build" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#2563eb"/><stop offset="100%" stop-color="#1d4ed8"/></linearGradient>
+  <linearGradient id="flash" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#7c3aed"/><stop offset="100%" stop-color="#6d28d9"/></linearGradient>
+  <linearGradient id="boot" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f97316"/><stop offset="100%" stop-color="#ea580c"/></linearGradient>
+  <linearGradient id="runtime" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#475569"/><stop offset="100%" stop-color="#334155"/></linearGradient>
+  <linearGradient id="regression" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#059669"/><stop offset="100%" stop-color="#047857"/></linearGradient>
+</defs>
+<rect width="1400" height="690" rx="30" fill="url(#bg)"/>
+<text x="700" y="58" text-anchor="middle" class="title">Testing Pipeline</text>
+<text x="700" y="88" text-anchor="middle" class="subtitle">Every change should pass from source validation to hardware regression testing</text>
+
+<g filter="url(#shadow)">
+  <rect x="45" y="180" width="185" height="165" rx="22" fill="url(#static)"/>
+  <text x="137" y="222" text-anchor="middle" class="box-title">Static Checks</text>
+  <text x="137" y="253" text-anchor="middle" class="box-sub">Shell syntax</text>
+  <text x="137" y="280" text-anchor="middle" class="box-sub">Markdown links</text>
+  <text x="137" y="307" text-anchor="middle" class="box-sub">Configuration sanity</text>
+</g>
+<path d="M230 262 H275" class="connector"/>
+
+<g filter="url(#shadow)">
+  <rect x="275" y="180" width="185" height="165" rx="22" fill="url(#build)"/>
+  <text x="367" y="222" text-anchor="middle" class="box-title">Build Test</text>
+  <text x="367" y="253" text-anchor="middle" class="box-sub">Clean build</text>
+  <text x="367" y="280" text-anchor="middle" class="box-sub">All release images</text>
+  <text x="367" y="307" text-anchor="middle" class="box-sub">Checksums valid</text>
+</g>
+<path d="M460 262 H505" class="connector"/>
+
+<g filter="url(#shadow)">
+  <rect x="505" y="180" width="185" height="165" rx="22" fill="url(#flash)"/>
+  <text x="597" y="222" text-anchor="middle" class="box-title">Flash Test</text>
+  <text x="597" y="253" text-anchor="middle" class="box-sub">SocToolKit import</text>
+  <text x="597" y="280" text-anchor="middle" class="box-sub">microSD write</text>
+  <text x="597" y="307" text-anchor="middle" class="box-sub">No missing images</text>
+</g>
+<path d="M690 262 H735" class="connector"/>
+
+<g filter="url(#shadow)">
+  <rect x="735" y="180" width="185" height="165" rx="22" fill="url(#boot)"/>
+  <text x="827" y="222" text-anchor="middle" class="box-title">Boot Test</text>
+  <text x="827" y="253" text-anchor="middle" class="box-sub">UART milestones</text>
+  <text x="827" y="280" text-anchor="middle" class="box-sub">Login prompt</text>
+  <text x="827" y="307" text-anchor="middle" class="box-sub">Clean reboot</text>
+</g>
+<path d="M920 262 H965" class="connector"/>
+
+<g filter="url(#shadow)">
+  <rect x="965" y="180" width="185" height="165" rx="22" fill="url(#runtime)"/>
+  <text x="1057" y="222" text-anchor="middle" class="box-title">Runtime Test</text>
+  <text x="1057" y="253" text-anchor="middle" class="box-sub">Swap · network</text>
+  <text x="1057" y="280" text-anchor="middle" class="box-sub">SSH · services</text>
+  <text x="1057" y="307" text-anchor="middle" class="box-sub">No OOM events</text>
+</g>
+<path d="M1150 262 H1195" class="connector"/>
+
+<g filter="url(#shadow)">
+  <rect x="1195" y="180" width="160" height="165" rx="22" fill="url(#regression)"/>
+  <text x="1275" y="222" text-anchor="middle" class="box-title">Regression</text>
+  <text x="1275" y="253" text-anchor="middle" class="box-sub">Existing features</text>
+  <text x="1275" y="280" text-anchor="middle" class="box-sub">Recovery path</text>
+  <text x="1275" y="307" text-anchor="middle" class="box-sub">Document result</text>
+</g>
+
+<g filter="url(#shadow)">
+  <rect x="160" y="425" width="1080" height="150" rx="24" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="200" y="468" class="label">Minimum hardware regression set</text>
+  <text x="200" y="508" class="note">UART boot · Ubuntu version · kernel version · swap active · DHCP · SSH · writable rootfs · clean reboot</text>
+  <text x="200" y="540" class="note">A test is not complete until the observed result and exact release version are recorded.</text>
+</g>
+
+<text x="700" y="635" text-anchor="middle" class="note">Test the complete release, not only the individual component that changed.</text>
+</svg>

@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="760" viewBox="0 0 1400 760" role="img">
+
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#f8fafc"/>
+    <stop offset="100%" stop-color="#eef2f7"/>
+  </linearGradient>
+  <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+    <feDropShadow dx="0" dy="7" stdDeviation="9" flood-color="#0f172a" flood-opacity="0.14"/>
+  </filter>
+  <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+    <path d="M0,0 L12,6 L0,12 Z" fill="#64748b"/>
+  </marker>
+  <style>
+    .title { font: 700 36px Inter, Segoe UI, Arial, sans-serif; fill: #0f172a; }
+    .subtitle { font: 400 17px Inter, Segoe UI, Arial, sans-serif; fill: #475569; }
+    .box-title { font: 700 20px Inter, Segoe UI, Arial, sans-serif; fill: #ffffff; }
+    .box-sub { font: 400 13px Inter, Segoe UI, Arial, sans-serif; fill: rgba(255,255,255,.92); }
+    .label { font: 700 15px Inter, Segoe UI, Arial, sans-serif; fill: #0f172a; }
+    .note { font: 500 13px Inter, Segoe UI, Arial, sans-serif; fill: #64748b; }
+    .mono { font: 600 13px ui-monospace, SFMono-Regular, Consolas, monospace; fill: #334155; }
+    .connector { fill: none; stroke: #64748b; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow); }
+    .connector-soft { fill: none; stroke: #94a3b8; stroke-width: 3; stroke-dasharray: 8 8; stroke-linecap: round; marker-end: url(#arrow); }
+  </style>
+</defs>
+
+<defs>
+  <linearGradient id="scope" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#0ea5e9"/><stop offset="100%" stop-color="#0284c7"/></linearGradient>
+  <linearGradient id="repro" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#2563eb"/><stop offset="100%" stop-color="#1d4ed8"/></linearGradient>
+  <linearGradient id="evidence" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#7c3aed"/><stop offset="100%" stop-color="#6d28d9"/></linearGradient>
+  <linearGradient id="test" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f97316"/><stop offset="100%" stop-color="#ea580c"/></linearGradient>
+  <linearGradient id="docs" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#475569"/><stop offset="100%" stop-color="#334155"/></linearGradient>
+  <linearGradient id="release" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#059669"/><stop offset="100%" stop-color="#047857"/></linearGradient>
+</defs>
+<rect width="1400" height="760" rx="30" fill="url(#bg)"/>
+<text x="700" y="58" text-anchor="middle" class="title">Developer Best Practices</text>
+<text x="700" y="88" text-anchor="middle" class="subtitle">The rules that keep an embedded Linux project maintainable</text>
+
+<g filter="url(#shadow)">
+  <rect x="75" y="155" width="380" height="165" rx="24" fill="url(#scope)"/>
+  <text x="265" y="200" text-anchor="middle" class="box-title">One Change at a Time</text>
+  <text x="265" y="235" text-anchor="middle" class="box-sub">Keep branches and commits focused</text>
+  <text x="265" y="264" text-anchor="middle" class="box-sub">Avoid unrelated cleanup during fixes</text>
+  <text x="265" y="293" text-anchor="middle" class="box-sub">Make rollback straightforward</text>
+</g>
+
+<g filter="url(#shadow)">
+  <rect x="510" y="155" width="380" height="165" rx="24" fill="url(#repro)"/>
+  <text x="700" y="200" text-anchor="middle" class="box-title">Make It Reproducible</text>
+  <text x="700" y="235" text-anchor="middle" class="box-sub">Put persistent changes in scripts</text>
+  <text x="700" y="264" text-anchor="middle" class="box-sub">Record versions and checksums</text>
+  <text x="700" y="293" text-anchor="middle" class="box-sub">Do not rely on manual board edits</text>
+</g>
+
+<g filter="url(#shadow)">
+  <rect x="945" y="155" width="380" height="165" rx="24" fill="url(#evidence)"/>
+  <text x="1135" y="200" text-anchor="middle" class="box-title">Preserve Evidence</text>
+  <text x="1135" y="235" text-anchor="middle" class="box-sub">Keep build and UART logs</text>
+  <text x="1135" y="264" text-anchor="middle" class="box-sub">Compare failing and fixed states</text>
+  <text x="1135" y="293" text-anchor="middle" class="box-sub">Never guess the root cause</text>
+</g>
+
+<g filter="url(#shadow)">
+  <rect x="75" y="390" width="380" height="165" rx="24" fill="url(#test)"/>
+  <text x="265" y="435" text-anchor="middle" class="box-title">Test the Whole System</text>
+  <text x="265" y="470" text-anchor="middle" class="box-sub">Clean build · flash · boot</text>
+  <text x="265" y="499" text-anchor="middle" class="box-sub">Memory · network · storage</text>
+  <text x="265" y="528" text-anchor="middle" class="box-sub">Verify after a clean reboot</text>
+</g>
+
+<g filter="url(#shadow)">
+  <rect x="510" y="390" width="380" height="165" rx="24" fill="url(#docs)"/>
+  <text x="700" y="435" text-anchor="middle" class="box-title">Document the Decision</text>
+  <text x="700" y="470" text-anchor="middle" class="box-sub">Explain why, not only how</text>
+  <text x="700" y="499" text-anchor="middle" class="box-sub">Update diagrams and examples</text>
+  <text x="700" y="528" text-anchor="middle" class="box-sub">Record known limitations</text>
+</g>
+
+<g filter="url(#shadow)">
+  <rect x="945" y="390" width="380" height="165" rx="24" fill="url(#release)"/>
+  <text x="1135" y="435" text-anchor="middle" class="box-title">Keep Main Releasable</text>
+  <text x="1135" y="470" text-anchor="middle" class="box-sub">No broken intermediate state</text>
+  <text x="1135" y="499" text-anchor="middle" class="box-sub">Tag only tested artifacts</text>
+  <text x="1135" y="528" text-anchor="middle" class="box-sub">Retain known-good releases</text>
+</g>
+
+<g filter="url(#shadow)">
+  <rect x="220" y="620" width="960" height="72" rx="22" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="700" y="663" text-anchor="middle" class="mono">focused · reproducible · evidence-based · tested · documented · releasable</text>
+</g>
+
+<text x="700" y="730" text-anchor="middle" class="note">Engineering quality is the ability to understand, reproduce and safely change the system later.</text>
+</svg>
