@@ -199,23 +199,13 @@ sudo apt update
 
 ---
 
-# Quick Reference
+## Quick Reference
 
-```text
-Build
-   ↓
-Verify
-   ↓
-Flash
-   ↓
-Boot
-   ↓
-SSH
-   ↓
-Verify
-   ↓
-Done
-```
+<p align="center">
+  <img src="images/luckfox-flashing-quick-reference.svg"
+       alt="Luckfox Ubuntu Flashing Quick Reference"
+       width="100%">
+</p>
 
 ---
 
