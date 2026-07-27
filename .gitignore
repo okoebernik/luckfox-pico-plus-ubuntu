@@ -1,45 +1,57 @@
-# SDK und große Quelldateien
+# -------------------------------------------------
+# Windows Zone Identifier
+# -------------------------------------------------
+
+*:Zone.Identifier
+
+# -------------------------------------------------
+# Build output
+# -------------------------------------------------
+
+output/
+
+rootfs/
+
 sdk/
-downloads/
 
-# Erzeugte Images und Build-Ausgaben
-output/*
-!output/.gitkeep
 *.img
-*.bin
-*.tar
-*.tar.gz
-*.zip
+*.img.gz
 
-# Temporäre Dateien
+# -------------------------------------------------
+# Logs
+# -------------------------------------------------
+
 *.log
+
+# -------------------------------------------------
+# Temporary files
+# -------------------------------------------------
+
 *.tmp
+*.bak
 *.swp
-*~
 
-# Windows
-Thumbs.db
-Desktop.ini
-
-# VS Code
-.vscode/
-
+# -------------------------------------------------
 # Python
+# -------------------------------------------------
+
 __pycache__/
 *.pyc
 
-# Generierte Ubuntu-Dateisysteme
-rootfs/ubuntu-jammy/*
-!rootfs/ubuntu-jammy/.gitkeep
-work/*
-*.ext4
+# -------------------------------------------------
+# VS Code
+# -------------------------------------------------
 
-# Generierte Ubuntu-Dateisysteme
-rootfs/ubuntu-jammy/*
-!rootfs/ubuntu-jammy/.gitkeep
-work/*
-*.ext4
+.vscode/
 
-# Generiertes Ubuntu-RootFS
-rootfs/*
-!rootfs/.gitkeep
+# -------------------------------------------------
+# JetBrains
+# -------------------------------------------------
+
+.idea/
+
+# -------------------------------------------------
+# macOS
+# -------------------------------------------------
+
+.DS_Store
