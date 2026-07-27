@@ -41,4 +41,22 @@ SYSCTL
 
 rm -f "${ROOTFS}/etc/nologin"
 
+echo "Installiere automatische RootFS-Erweiterung ..."
+
+OVERLAY_DIR="${PROJECT_DIR}/rootfs-overlay"
+
+require_directory "${OVERLAY_DIR}"
+
+cp -a "${OVERLAY_DIR}/." "${ROOTFS}/"
+
+chmod 0755 \
+    "${ROOTFS}/usr/local/sbin/luckfox-expand-rootfs"
+
+mkdir -p \
+    "${ROOTFS}/etc/systemd/system/multi-user.target.wants"
+
+ln -sfn \
+    ../luckfox-expand-rootfs.service \
+    "${ROOTFS}/etc/systemd/system/multi-user.target.wants/luckfox-expand-rootfs.service"
+
 echo "RootFS-Optimierung abgeschlossen."

@@ -1,0 +1,70 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+MARKER_DIR="/var/lib/luckfox"
+MARKER_FILE="${MARKER_DIR}/rootfs-expanded"
+
+log() {
+    printf 'luckfox-expand-rootfs: %s\n' "$*"
+}
+
+fail() {
+    log "ERROR: $*"
+    exit 1
+}
+
+if [[ -e "${MARKER_FILE}" ]]; then
+    log "Root filesystem was already expanded."
+    exit 0
+fi
+
+ROOT_SOURCE="$(findmnt -n -o SOURCE /)"
+ROOT_FSTYPE="$(findmnt -n -o FSTYPE /)"
+
+if [[ -z "${ROOT_SOURCE}" ]]; then
+    fail "Could not determine the root filesystem device."
+fi
+
+log "Root device: ${ROOT_SOURCE}"
+log "Filesystem: ${ROOT_FSTYPE}"
+
+if [[ "${ROOT_FSTYPE}" != "ext4" ]]; then
+    fail "Unsupported root filesystem: ${ROOT_FSTYPE}"
+fi
+
+if [[ ! -b "${ROOT_SOURCE}" ]]; then
+    fail "Root source is not a block device: ${ROOT_SOURCE}"
+fi
+
+case "${ROOT_SOURCE}" in
+    /dev/mmcblk*p*)
+        ;;
+    *)
+        fail "Unexpected root device: ${ROOT_SOURCE}"
+        ;;
+esac
+
+if ! command -v resize2fs >/dev/null 2>&1; then
+    fail "resize2fs is not installed."
+fi
+
+BEFORE_SIZE="$(df -B1 --output=size / | tail -n 1 | tr -d '[:space:]')"
+
+log "Expanding ext4 filesystem..."
+resize2fs "${ROOT_SOURCE}"
+
+AFTER_SIZE="$(df -B1 --output=size / | tail -n 1 | tr -d '[:space:]')"
+
+mkdir -p "${MARKER_DIR}"
+
+cat > "${MARKER_FILE}" <<EOF
+Root device: ${ROOT_SOURCE}
+Filesystem: ${ROOT_FSTYPE}
+Size before: ${BEFORE_SIZE}
+Size after: ${AFTER_SIZE}
+Completed: $(date --iso-8601=seconds)
+EOF
+
+log "Root filesystem expansion completed."
+log "Size before: ${BEFORE_SIZE} bytes"
+log "Size after:  ${AFTER_SIZE} bytes"

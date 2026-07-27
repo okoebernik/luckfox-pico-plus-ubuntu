@@ -1,0 +1,14 @@
+[Unit]
+Description=Expand Luckfox root filesystem on first boot
+Documentation=https://github.com/okoebernik/luckfox-pico-plus-ubuntu
+After=local-fs.target
+ConditionPathExists=!/var/lib/luckfox/rootfs-expanded
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/luckfox-expand-rootfs
+RemainAfterExit=yes
+TimeoutStartSec=0
+
+[Install]
+WantedBy=multi-user.target
