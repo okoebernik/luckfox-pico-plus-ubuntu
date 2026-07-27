@@ -22,6 +22,12 @@ version: v0.1.0
 
 ---
 
+| Previous | Home | Next |
+|-----------|------|------|
+| [← Getting Started](getting-started.md) | [README](../README.md) | [Flashing →](flashing.md) |
+
+---
+
 # Table of Contents
 
 - Design Goals
@@ -383,6 +389,12 @@ Advantages include:
 | troubleshooting.md | Known issues |
 
 ---
+
+---
+
+| Previous | Home | Next |
+|-----------|------|------|
+| [← Getting Started](getting-started.md) | [README](../README.md) | [Flashing →](flashing.md) |
 
 <div align="center">
 
