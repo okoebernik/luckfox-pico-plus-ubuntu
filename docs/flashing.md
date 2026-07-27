@@ -213,4 +213,4 @@ sudo apt update
 
 | Previous | Home | Next |
 |-----------|------|------|
-| [← Build System](build-system.md) | [README](../README.md) | First Boot → |
+| [← Build System](build-system.md) | [README](../README.md) | [First Boot →](first-boot.md) |
