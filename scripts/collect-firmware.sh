@@ -22,6 +22,7 @@ required_images=(
     download.bin
     idblock.img
     uboot.img
+    userdata.img
 )
 
 for image in "${required_images[@]}"; do
@@ -42,3 +43,4 @@ find "${FIRMWARE_OUTPUT}" \
     -maxdepth 1 -type f \
     -printf '%f\t%k KB\n' \
     | sort
+
