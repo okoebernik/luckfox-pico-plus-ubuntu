@@ -22,6 +22,7 @@ required_images=(
     download.bin
     idblock.img
     uboot.img
+    userdata.img
 )
 
 for image in "${required_images[@]}"; do
