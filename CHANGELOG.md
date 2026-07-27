@@ -222,6 +222,31 @@ These principles will continue to guide future development.
 | 0.1.0 | ✅ Released | Initial public release |
 
 ---
+# Changelog
+
+## [0.2.0] - Unreleased
+
+### Added
+
+- Added `luckfox-info` system information utility.
+- Added automatic root filesystem expansion during the first boot.
+- Added one-shot systemd service for first boot initialization.
+- Added automatic generation of `/etc/luckfox-release`.
+
+### Changed
+
+- Improved `create-rootfs-image.sh` to create the swapfile directly inside the ext4 image.
+- Improved `optimize-rootfs.sh` with reproducible system initialization.
+- Improved first boot experience by automatically expanding the root filesystem.
+- Improved image generation workflow for better reliability.
+
+### Fixed
+
+- Fixed swapfile creation to avoid sparse files that could not be activated by `swapon`.
+- Fixed out-of-memory (OOM) condition during the first login.
+- Fixed root filesystem image initialization on freshly flashed systems.
+
+
 
 For upcoming changes, see the **Project Roadmap** in:
 
