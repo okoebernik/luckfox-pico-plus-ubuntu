@@ -1,0 +1,302 @@
+#!/usr/bin/env bash
+set -uo pipefail
+
+RELEASE_FILE="/etc/luckfox-release"
+
+# -------------------------------------------------
+# Terminal formatting
+# -------------------------------------------------
+
+if [[ -t 1 ]]; then
+    BOLD="\033[1m"
+    BLUE="\033[0;34m"
+    GREEN="\033[0;32m"
+    YELLOW="\033[0;33m"
+    RESET="\033[0m"
+else
+    BOLD=""
+    BLUE=""
+    GREEN=""
+    YELLOW=""
+    RESET=""
+fi
+
+section() {
+    printf "\n${BLUE}${BOLD}%s${RESET}\n" "$1"
+}
+
+value() {
+    printf "%-20s %s\n" "$1" "$2"
+}
+
+unknown_if_empty() {
+    if [[ -n "${1:-}" ]]; then
+        printf '%s' "$1"
+    else
+        printf 'unknown'
+    fi
+}
+
+# -------------------------------------------------
+# Project information
+# -------------------------------------------------
+
+PROJECT_NAME="Luckfox Pico Plus Ubuntu"
+PROJECT_VERSION="unknown"
+PROJECT_BOARD="Luckfox Pico Plus"
+
+if [[ -r "${RELEASE_FILE}" ]]; then
+    # shellcheck disable=SC1090
+    source "${RELEASE_FILE}"
+
+    PROJECT_NAME="${PROJECT_NAME:-Luckfox Pico Plus Ubuntu}"
+    PROJECT_VERSION="${PROJECT_VERSION:-unknown}"
+    PROJECT_BOARD="${PROJECT_BOARD:-Luckfox Pico Plus}"
+fi
+
+# -------------------------------------------------
+# Operating system
+# -------------------------------------------------
+
+OS_NAME="unknown"
+OS_VERSION="unknown"
+
+if [[ -r /etc/os-release ]]; then
+    # shellcheck disable=SC1091
+    source /etc/os-release
+
+    OS_NAME="${PRETTY_NAME:-unknown}"
+    OS_VERSION="${VERSION_ID:-unknown}"
+fi
+
+KERNEL_VERSION="$(uname -r 2>/dev/null || printf 'unknown')"
+ARCHITECTURE="$(dpkg --print-architecture 2>/dev/null || uname -m 2>/dev/null || printf 'unknown')"
+HOSTNAME_VALUE="$(hostname 2>/dev/null || printf 'unknown')"
+UPTIME_VALUE="$(uptime -p 2>/dev/null || printf 'unknown')"
+
+# -------------------------------------------------
+# Hardware information
+# -------------------------------------------------
+
+BOARD_MODEL="${PROJECT_BOARD}"
+
+if [[ -r /proc/device-tree/model ]]; then
+    BOARD_MODEL="$(
+        tr -d '\0' < /proc/device-tree/model 2>/dev/null
+    )"
+fi
+
+SOC_MODEL="$(
+    awk -F ': *' '
+        /^Hardware/ {
+            print $2
+            exit
+        }
+        /^model name/ {
+            model = $2
+        }
+        END {
+            if (model != "") {
+                print model
+            }
+        }
+    ' /proc/cpuinfo 2>/dev/null \
+    | head -n 1
+)"
+
+SOC_MODEL="$(unknown_if_empty "${SOC_MODEL}")"
+
+CPU_COUNT="$(
+    getconf _NPROCESSORS_ONLN 2>/dev/null \
+    || grep -c '^processor' /proc/cpuinfo 2>/dev/null \
+    || printf 'unknown'
+)"
+
+TEMPERATURE="not available"
+
+for thermal_file in /sys/class/thermal/thermal_zone*/temp; do
+    if [[ -r "${thermal_file}" ]]; then
+        RAW_TEMP="$(cat "${thermal_file}" 2>/dev/null || true)"
+
+        if [[ "${RAW_TEMP}" =~ ^[0-9]+$ ]]; then
+            if (( RAW_TEMP >= 1000 )); then
+                TEMPERATURE="$(
+                    awk -v temp="${RAW_TEMP}" \
+                        'BEGIN {printf "%.1f °C", temp / 1000}'
+                )"
+            else
+                TEMPERATURE="${RAW_TEMP} °C"
+            fi
+
+            break
+        fi
+    fi
+done
+
+# -------------------------------------------------
+# Memory
+# -------------------------------------------------
+
+MEM_TOTAL="unknown"
+MEM_AVAILABLE="unknown"
+SWAP_TOTAL="unknown"
+SWAP_USED="unknown"
+
+if command -v free >/dev/null 2>&1; then
+    MEM_TOTAL="$(
+        free -h | awk '/^Mem:/ {print $2}'
+    )"
+
+    MEM_AVAILABLE="$(
+        free -h | awk '/^Mem:/ {print $7}'
+    )"
+
+    SWAP_TOTAL="$(
+        free -h | awk '/^Swap:/ {print $2}'
+    )"
+
+    SWAP_USED="$(
+        free -h | awk '/^Swap:/ {print $3}'
+    )"
+fi
+
+# -------------------------------------------------
+# Storage
+# -------------------------------------------------
+
+ROOT_SOURCE="$(
+    findmnt -n -o SOURCE / 2>/dev/null \
+    || printf 'unknown'
+)"
+
+ROOT_FILESYSTEM="$(
+    findmnt -n -o FSTYPE / 2>/dev/null \
+    || printf 'unknown'
+)"
+
+ROOT_SIZE="$(
+    df -hP / 2>/dev/null \
+    | awk 'NR == 2 {print $2}'
+)"
+
+ROOT_USED="$(
+    df -hP / 2>/dev/null \
+    | awk 'NR == 2 {print $3}'
+)"
+
+ROOT_AVAILABLE="$(
+    df -hP / 2>/dev/null \
+    | awk 'NR == 2 {print $4}'
+)"
+
+ROOT_USAGE="$(
+    df -hP / 2>/dev/null \
+    | awk 'NR == 2 {print $5}'
+)"
+
+# -------------------------------------------------
+# Network
+# -------------------------------------------------
+
+NETWORK_INTERFACE="$(
+    ip route show default 2>/dev/null \
+    | awk 'NR == 1 {print $5}'
+)"
+
+if [[ -z "${NETWORK_INTERFACE}" ]] && [[ -d /sys/class/net/eth0 ]]; then
+    NETWORK_INTERFACE="eth0"
+fi
+
+NETWORK_STATE="not available"
+IP_ADDRESS="not available"
+MAC_ADDRESS="not available"
+
+if [[ -n "${NETWORK_INTERFACE}" ]]; then
+    if [[ -r "/sys/class/net/${NETWORK_INTERFACE}/operstate" ]]; then
+        NETWORK_STATE="$(
+            cat "/sys/class/net/${NETWORK_INTERFACE}/operstate"
+        )"
+    fi
+
+    IP_ADDRESS="$(
+        ip -4 -o address show dev "${NETWORK_INTERFACE}" scope global \
+            2>/dev/null \
+        | awk 'NR == 1 {split($4, address, "/"); print address[1]}'
+    )"
+
+    MAC_ADDRESS="$(
+        cat "/sys/class/net/${NETWORK_INTERFACE}/address" \
+            2>/dev/null \
+        || true
+    )"
+
+    IP_ADDRESS="${IP_ADDRESS:-not assigned}"
+    MAC_ADDRESS="${MAC_ADDRESS:-not available}"
+fi
+
+# -------------------------------------------------
+# Service state
+# -------------------------------------------------
+
+FAILED_SERVICES="unknown"
+
+if command -v systemctl >/dev/null 2>&1; then
+    FAILED_SERVICES="$(
+        systemctl --failed --no-legend --plain 2>/dev/null \
+        | grep -c . \
+        || true
+    )"
+fi
+
+# -------------------------------------------------
+# Output
+# -------------------------------------------------
+
+printf "${GREEN}${BOLD}%s${RESET}\n" "${PROJECT_NAME}"
+printf '%s\n' "========================================"
+
+section "System"
+
+value "Project version:" "${PROJECT_VERSION}"
+value "Board:" "${BOARD_MODEL}"
+value "SoC:" "${SOC_MODEL}"
+value "Hostname:" "${HOSTNAME_VALUE}"
+value "Operating system:" "${OS_NAME}"
+value "Kernel:" "${KERNEL_VERSION}"
+value "Architecture:" "${ARCHITECTURE}"
+value "CPU cores:" "${CPU_COUNT}"
+value "Temperature:" "${TEMPERATURE}"
+value "Uptime:" "${UPTIME_VALUE}"
+
+section "Memory"
+
+value "RAM total:" "${MEM_TOTAL}"
+value "RAM available:" "${MEM_AVAILABLE}"
+value "Swap total:" "${SWAP_TOTAL}"
+value "Swap used:" "${SWAP_USED}"
+
+section "Storage"
+
+value "Root device:" "${ROOT_SOURCE}"
+value "Filesystem:" "${ROOT_FILESYSTEM}"
+value "Root size:" "${ROOT_SIZE}"
+value "Root used:" "${ROOT_USED}"
+value "Root available:" "${ROOT_AVAILABLE}"
+value "Root usage:" "${ROOT_USAGE}"
+
+section "Network"
+
+value "Interface:" "${NETWORK_INTERFACE:-not available}"
+value "State:" "${NETWORK_STATE}"
+value "IPv4 address:" "${IP_ADDRESS}"
+value "MAC address:" "${MAC_ADDRESS}"
+
+section "Health"
+
+if [[ "${FAILED_SERVICES}" == "0" ]]; then
+    value "Failed services:" "none"
+elif [[ "${FAILED_SERVICES}" =~ ^[0-9]+$ ]]; then
+    value "Failed services:" "${YELLOW}${FAILED_SERVICES}${RESET}"
+else
+    value "Failed services:" "unknown"
+fi
