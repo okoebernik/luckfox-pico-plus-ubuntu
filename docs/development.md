@@ -21,7 +21,7 @@ version: v0.1.0
 
 | Previous | Home | Next |
 |-----------|------|------|
-| [← Troubleshooting](troubleshooting.md) | [README](../README.md) | [Project Roadmap →] (project-roadmap.md) |
+| [← Troubleshooting](troubleshooting.md) | [README](../README.md) | [Project Roadmap →](project-roadmap.md) |
 
 ---
 
