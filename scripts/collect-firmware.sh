@@ -43,3 +43,4 @@ find "${FIRMWARE_OUTPUT}" \
     -maxdepth 1 -type f \
     -printf '%f\t%k KB\n' \
     | sort
+
