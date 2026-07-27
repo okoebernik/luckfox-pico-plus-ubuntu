@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="720" viewBox="0 0 1500 720" role="img" aria-labelledby="title desc">
+
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#f8fafc"/>
+    <stop offset="100%" stop-color="#eef2f7"/>
+  </linearGradient>
+  <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+    <feDropShadow dx="0" dy="7" stdDeviation="9" flood-color="#0f172a" flood-opacity="0.14"/>
+  </filter>
+  <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+    <path d="M0,0 L12,6 L0,12 Z" fill="#64748b"/>
+  </marker>
+  <style>
+    .title { font: 700 36px Inter, Segoe UI, Arial, sans-serif; fill: #0f172a; }
+    .subtitle { font: 400 17px Inter, Segoe UI, Arial, sans-serif; fill: #475569; }
+    .box-title { font: 700 20px Inter, Segoe UI, Arial, sans-serif; fill: #ffffff; }
+    .box-sub { font: 400 13px Inter, Segoe UI, Arial, sans-serif; fill: rgba(255,255,255,.92); }
+    .label { font: 700 15px Inter, Segoe UI, Arial, sans-serif; fill: #0f172a; }
+    .note { font: 500 13px Inter, Segoe UI, Arial, sans-serif; fill: #64748b; }
+    .mono { font: 600 13px ui-monospace, SFMono-Regular, Consolas, monospace; fill: #334155; }
+    .connector { fill: none; stroke: #64748b; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow); }
+    .connector-soft { fill: none; stroke: #94a3b8; stroke-width: 3; stroke-dasharray: 8 8; stroke-linecap: round; marker-end: url(#arrow); }
+  </style>
+</defs>
+
+<defs>
+  <linearGradient id="discuss" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#0ea5e9"/><stop offset="100%" stop-color="#0284c7"/></linearGradient>
+  <linearGradient id="issue" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#2563eb"/><stop offset="100%" stop-color="#1d4ed8"/></linearGradient>
+  <linearGradient id="contribute" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#7c3aed"/><stop offset="100%" stop-color="#6d28d9"/></linearGradient>
+  <linearGradient id="review" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f97316"/><stop offset="100%" stop-color="#ea580c"/></linearGradient>
+  <linearGradient id="release" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#059669"/><stop offset="100%" stop-color="#047857"/></linearGradient>
+</defs>
+<rect width="1500" height="720" rx="30" fill="url(#bg)"/>
+<text id="title" x="750" y="58" text-anchor="middle" class="title">Community Workflow</text>
+<text id="desc" x="750" y="88" text-anchor="middle" class="subtitle">Ideas become stable project improvements through transparent evidence and review</text>
+
+<g filter="url(#shadow)">
+  <rect x="80" y="190" width="230" height="175" rx="24" fill="url(#discuss)"/>
+  <text x="195" y="238" text-anchor="middle" class="box-title">Discuss</text>
+  <text x="195" y="274" text-anchor="middle" class="box-sub">Questions and ideas</text>
+  <text x="195" y="304" text-anchor="middle" class="box-sub">Roadmap alignment</text>
+  <text x="195" y="334" text-anchor="middle" class="box-sub">Avoid duplicate work</text>
+</g>
+<path d="M310 278 H365" class="connector"/>
+
+<g filter="url(#shadow)">
+  <rect x="365" y="190" width="230" height="175" rx="24" fill="url(#issue)"/>
+  <text x="480" y="238" text-anchor="middle" class="box-title">Issue</text>
+  <text x="480" y="274" text-anchor="middle" class="box-sub">Problem or proposal</text>
+  <text x="480" y="304" text-anchor="middle" class="box-sub">Environment and evidence</text>
+  <text x="480" y="334" text-anchor="middle" class="box-sub">Acceptance criteria</text>
+</g>
+<path d="M595 278 H650" class="connector"/>
+
+<g filter="url(#shadow)">
+  <rect x="650" y="190" width="230" height="175" rx="24" fill="url(#contribute)"/>
+  <text x="765" y="238" text-anchor="middle" class="box-title">Contribution</text>
+  <text x="765" y="274" text-anchor="middle" class="box-sub">Focused branch</text>
+  <text x="765" y="304" text-anchor="middle" class="box-sub">Code, tests and docs</text>
+  <text x="765" y="334" text-anchor="middle" class="box-sub">Hardware evidence</text>
+</g>
+<path d="M880 278 H935" class="connector"/>
+
+<g filter="url(#shadow)">
+  <rect x="935" y="190" width="230" height="175" rx="24" fill="url(#review)"/>
+  <text x="1050" y="238" text-anchor="middle" class="box-title">Review</text>
+  <text x="1050" y="274" text-anchor="middle" class="box-sub">Scope and quality</text>
+  <text x="1050" y="304" text-anchor="middle" class="box-sub">Regression results</text>
+  <text x="1050" y="334" text-anchor="middle" class="box-sub">Documentation impact</text>
+</g>
+<path d="M1165 278 H1220" class="connector"/>
+
+<g filter="url(#shadow)">
+  <rect x="1220" y="190" width="200" height="175" rx="24" fill="url(#release)"/>
+  <text x="1320" y="238" text-anchor="middle" class="box-title">Release</text>
+  <text x="1320" y="274" text-anchor="middle" class="box-sub">Merged change</text>
+  <text x="1320" y="304" text-anchor="middle" class="box-sub">Published artifacts</text>
+  <text x="1320" y="334" text-anchor="middle" class="box-sub">Release notes</text>
+</g>
+
+<g filter="url(#shadow)">
+  <rect x="150" y="445" width="1200" height="155" rx="24" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="195" y="488" class="label">Community principles</text>
+  <text x="195" y="530" class="note">Respectful discussion · reproducible evidence · focused changes · transparent limitations · documented decisions</text>
+  <text x="195" y="566" class="note">Not every proposal must become a feature, but every decision should remain understandable.</text>
+</g>
+
+<text x="750" y="660" text-anchor="middle" class="note">The roadmap guides priorities while issues and contributions provide the practical path forward.</text>
+</svg>

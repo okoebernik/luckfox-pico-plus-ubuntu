@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="820" viewBox="0 0 1500 820" role="img" aria-labelledby="title desc">
+
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#f8fafc"/>
+    <stop offset="100%" stop-color="#eef2f7"/>
+  </linearGradient>
+  <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+    <feDropShadow dx="0" dy="7" stdDeviation="9" flood-color="#0f172a" flood-opacity="0.14"/>
+  </filter>
+  <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+    <path d="M0,0 L12,6 L0,12 Z" fill="#64748b"/>
+  </marker>
+  <style>
+    .title { font: 700 36px Inter, Segoe UI, Arial, sans-serif; fill: #0f172a; }
+    .subtitle { font: 400 17px Inter, Segoe UI, Arial, sans-serif; fill: #475569; }
+    .box-title { font: 700 20px Inter, Segoe UI, Arial, sans-serif; fill: #ffffff; }
+    .box-sub { font: 400 13px Inter, Segoe UI, Arial, sans-serif; fill: rgba(255,255,255,.92); }
+    .label { font: 700 15px Inter, Segoe UI, Arial, sans-serif; fill: #0f172a; }
+    .note { font: 500 13px Inter, Segoe UI, Arial, sans-serif; fill: #64748b; }
+    .mono { font: 600 13px ui-monospace, SFMono-Regular, Consolas, monospace; fill: #334155; }
+    .connector { fill: none; stroke: #64748b; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow); }
+    .connector-soft { fill: none; stroke: #94a3b8; stroke-width: 3; stroke-dasharray: 8 8; stroke-linecap: round; marker-end: url(#arrow); }
+  </style>
+</defs>
+
+<defs>
+  <linearGradient id="reliable" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#059669"/><stop offset="100%" stop-color="#047857"/></linearGradient>
+  <linearGradient id="repro" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#2563eb"/><stop offset="100%" stop-color="#1d4ed8"/></linearGradient>
+  <linearGradient id="usable" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f97316"/><stop offset="100%" stop-color="#ea580c"/></linearGradient>
+  <linearGradient id="maintain" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#7c3aed"/><stop offset="100%" stop-color="#6d28d9"/></linearGradient>
+  <linearGradient id="open" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#0ea5e9"/><stop offset="100%" stop-color="#0284c7"/></linearGradient>
+  <linearGradient id="scope" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#475569"/><stop offset="100%" stop-color="#334155"/></linearGradient>
+</defs>
+<rect width="1500" height="820" rx="30" fill="url(#bg)"/>
+<text id="title" x="750" y="58" text-anchor="middle" class="title">Project Goals</text>
+<text id="desc" x="750" y="88" text-anchor="middle" class="subtitle">The criteria used to decide which roadmap work belongs in the project</text>
+
+<g filter="url(#shadow)">
+  <rect x="75" y="145" width="410" height="205" rx="26" fill="url(#reliable)"/>
+  <text x="280" y="192" text-anchor="middle" class="box-title">Reliable</text>
+  <text x="125" y="238" class="box-sub">Boots consistently</text>
+  <text x="125" y="272" class="box-sub">Recovers predictably</text>
+  <text x="125" y="306" class="box-sub">Handles memory limits honestly</text>
+</g>
+
+<g filter="url(#shadow)">
+  <rect x="545" y="145" width="410" height="205" rx="26" fill="url(#repro)"/>
+  <text x="750" y="192" text-anchor="middle" class="box-title">Reproducible</text>
+  <text x="595" y="238" class="box-sub">Source-controlled changes</text>
+  <text x="595" y="272" class="box-sub">Verified checksums</text>
+  <text x="595" y="306" class="box-sub">Traceable release artifacts</text>
+</g>
+
+<g filter="url(#shadow)">
+  <rect x="1015" y="145" width="410" height="205" rx="26" fill="url(#usable)"/>
+  <text x="1220" y="192" text-anchor="middle" class="box-title">Usable</text>
+  <text x="1065" y="238" class="box-sub">Ubuntu tools and apt</text>
+  <text x="1065" y="272" class="box-sub">Clear first-boot workflow</text>
+  <text x="1065" y="306" class="box-sub">Practical examples</text>
+</g>
+
+<g filter="url(#shadow)">
+  <rect x="75" y="420" width="410" height="205" rx="26" fill="url(#maintain)"/>
+  <text x="280" y="467" text-anchor="middle" class="box-title">Maintainable</text>
+  <text x="125" y="513" class="box-sub">Small, reviewable changes</text>
+  <text x="125" y="547" class="box-sub">Stable project structure</text>
+  <text x="125" y="581" class="box-sub">Documented decisions</text>
+</g>
+
+<g filter="url(#shadow)">
+  <rect x="545" y="420" width="410" height="205" rx="26" fill="url(#open)"/>
+  <text x="750" y="467" text-anchor="middle" class="box-title">Open</text>
+  <text x="595" y="513" class="box-sub">Transparent issues</text>
+  <text x="595" y="547" class="box-sub">Contribution-friendly workflow</text>
+  <text x="595" y="581" class="box-sub">Public roadmap and limitations</text>
+</g>
+
+<g filter="url(#shadow)">
+  <rect x="1015" y="420" width="410" height="205" rx="26" fill="url(#scope)"/>
+  <text x="1220" y="467" text-anchor="middle" class="box-title">Focused</text>
+  <text x="1065" y="513" class="box-sub">Luckfox Pico Plus first</text>
+  <text x="1065" y="547" class="box-sub">Lightweight workloads</text>
+  <text x="1065" y="581" class="box-sub">No unrealistic server claims</text>
+</g>
+
+<g filter="url(#shadow)">
+  <rect x="200" y="690" width="1100" height="70" rx="22" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="750" y="733" text-anchor="middle" class="mono">reliable · reproducible · usable · maintainable · open · focused</text>
+</g>
+</svg>
