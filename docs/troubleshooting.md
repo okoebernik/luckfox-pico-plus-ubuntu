@@ -21,7 +21,7 @@ version: v0.1.0
 
 | Previous | Home | Next |
 |-----------|------|------|
-| [← Memory Optimization](memory-optimization.md) | [README](../README.md) | Development → |
+| [← Memory Optimization](memory-optimization.md) | [README](../README.md) | [Development →](development.md) |
 
 ---
 
