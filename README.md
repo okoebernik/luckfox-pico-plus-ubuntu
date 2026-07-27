@@ -135,6 +135,7 @@ The project separates the vendor BSP from the Ubuntu userspace. This makes SDK u
 | [Memory Optimization](docs/memory-optimization.md) | Running Ubuntu with approximately 31 MiB visible RAM |
 | [Troubleshooting](docs/troubleshooting.md) | Layered diagnosis, recovery and log collection |
 | [Development](docs/development.md) | Repository internals and contribution guidance |
+| [Project Roadmap](docs/project-roadmap.md) | Long-term vision, milestones and release strategy |
 
 ---
 
@@ -333,12 +334,12 @@ See [Memory Optimization](docs/memory-optimization.md) before installing larger 
 - release packaging
 - engineering documentation
 
-### v0.2 — Hardware Enablement
+### v0.2 — Engineering Quality
 
-- GPIO helper tooling
-- camera-support documentation
-- automatic root-filesystem expansion
-- improved hardware test coverage
+- improved build validation
+- better diagnostics and logging
+- automatic RootFS expansion
+- release consistency verification
 
 ### v1.0 — Stable Community Release
 
