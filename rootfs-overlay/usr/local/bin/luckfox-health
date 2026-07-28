@@ -1,0 +1,295 @@
+#!/usr/bin/env bash
+set -uo pipefail
+
+WARNINGS=0
+ERRORS=0
+
+ROOTFS_MARKER="/var/lib/luckfox/rootfs-expanded"
+MAC_FILE="/etc/luckfox/mac-address"
+RELEASE_FILE="/etc/luckfox-release"
+NETWORK_INTERFACE="eth0"
+
+MIN_ROOT_FREE_MB=256
+MIN_MEMORY_AVAILABLE_KB=4096
+
+# -------------------------------------------------
+# Terminal formatting
+# -------------------------------------------------
+
+if [[ -t 1 ]]; then
+    GREEN="\033[0;32m"
+    YELLOW="\033[0;33m"
+    RED="\033[0;31m"
+    BOLD="\033[1m"
+    RESET="\033[0m"
+else
+    GREEN=""
+    YELLOW=""
+    RED=""
+    BOLD=""
+    RESET=""
+fi
+
+ok() {
+    printf "${GREEN}[ OK ]${RESET} %s\n" "$1"
+}
+
+warn() {
+    printf "${YELLOW}[WARN]${RESET} %s\n" "$1"
+    WARNINGS=$((WARNINGS + 1))
+}
+
+fail() {
+    printf "${RED}[FAIL]${RESET} %s\n" "$1"
+    ERRORS=$((ERRORS + 1))
+}
+
+# -------------------------------------------------
+# Root filesystem
+# -------------------------------------------------
+
+check_rootfs_expanded() {
+    if [[ -f "${ROOTFS_MARKER}" ]]; then
+        ok "Root filesystem expansion completed"
+    else
+        warn "Root filesystem expansion marker is missing"
+    fi
+}
+
+check_rootfs_space() {
+    local available_kb
+    local available_mb
+
+    available_kb="$(
+        df -Pk / 2>/dev/null |
+        awk 'NR == 2 {print $4}'
+    )"
+
+    if [[ ! "${available_kb}" =~ ^[0-9]+$ ]]; then
+        fail "Could not determine available root filesystem space"
+        return
+    fi
+
+    available_mb=$((available_kb / 1024))
+
+    if (( available_mb >= MIN_ROOT_FREE_MB )); then
+        ok "Root filesystem has ${available_mb} MiB available"
+    else
+        warn "Only ${available_mb} MiB available on root filesystem"
+    fi
+}
+
+# -------------------------------------------------
+# Swap
+# -------------------------------------------------
+
+check_swap() {
+    local swap_size_kb
+
+    swap_size_kb="$(
+        awk '
+            NR > 1 {
+                total += $3
+            }
+            END {
+                print total + 0
+            }
+        ' /proc/swaps 2>/dev/null
+    )"
+
+    if [[ ! "${swap_size_kb}" =~ ^[0-9]+$ ]]; then
+        fail "Could not determine swap status"
+        return
+    fi
+
+    if (( swap_size_kb > 0 )); then
+        ok "Swap is active: $((swap_size_kb / 1024)) MiB"
+    else
+        fail "No active swap detected"
+    fi
+}
+
+# -------------------------------------------------
+# Memory
+# -------------------------------------------------
+
+check_memory() {
+    local available_kb
+
+    available_kb="$(
+        awk '
+            /^MemAvailable:/ {
+                print $2
+                exit
+            }
+        ' /proc/meminfo 2>/dev/null
+    )"
+
+    if [[ ! "${available_kb}" =~ ^[0-9]+$ ]]; then
+        fail "Could not determine available memory"
+        return
+    fi
+
+    if (( available_kb >= MIN_MEMORY_AVAILABLE_KB )); then
+        ok "Available memory: $((available_kb / 1024)) MiB"
+    else
+        warn "Low available memory: $((available_kb / 1024)) MiB"
+    fi
+}
+
+# -------------------------------------------------
+# Persistent MAC
+# -------------------------------------------------
+
+check_persistent_mac() {
+    local configured_mac
+    local active_mac
+
+    if [[ ! -r "${MAC_FILE}" ]]; then
+        fail "Persistent MAC file is missing"
+        return
+    fi
+
+    configured_mac="$(
+        tr '[:upper:]' '[:lower:]' < "${MAC_FILE}" |
+        tr -d '[:space:]'
+    )"
+
+    if [[ ! "${configured_mac}" =~ ^([0-9a-f]{2}:){5}[0-9a-f]{2}$ ]]; then
+        fail "Persistent MAC file contains an invalid address"
+        return
+    fi
+
+    if [[ ! -r "/sys/class/net/${NETWORK_INTERFACE}/address" ]]; then
+        fail "Network interface ${NETWORK_INTERFACE} is missing"
+        return
+    fi
+
+    active_mac="$(
+        tr '[:upper:]' '[:lower:]' \
+            < "/sys/class/net/${NETWORK_INTERFACE}/address"
+    )"
+
+    if [[ "${configured_mac}" == "${active_mac}" ]]; then
+        ok "Persistent MAC is active: ${active_mac}"
+    else
+        fail "Active MAC differs from persistent MAC"
+    fi
+}
+
+# -------------------------------------------------
+# Network
+# -------------------------------------------------
+
+check_network_interface() {
+    local state
+
+    if [[ ! -d "/sys/class/net/${NETWORK_INTERFACE}" ]]; then
+        fail "Network interface ${NETWORK_INTERFACE} is missing"
+        return
+    fi
+
+    state="$(
+        cat "/sys/class/net/${NETWORK_INTERFACE}/operstate" \
+            2>/dev/null \
+        || printf 'unknown'
+    )"
+
+    if [[ "${state}" == "up" ]]; then
+        ok "Network interface ${NETWORK_INTERFACE} is up"
+    else
+        warn "Network interface ${NETWORK_INTERFACE} state: ${state}"
+    fi
+}
+
+check_ipv4_address() {
+    local ipv4_address
+
+    ipv4_address="$(
+        ip -4 -o address show dev "${NETWORK_INTERFACE}" scope global \
+            2>/dev/null |
+        awk 'NR == 1 {print $4}'
+    )"
+
+    if [[ -n "${ipv4_address}" ]]; then
+        ok "IPv4 address assigned: ${ipv4_address}"
+    else
+        warn "No global IPv4 address assigned"
+    fi
+}
+
+# -------------------------------------------------
+# Release metadata
+# -------------------------------------------------
+
+check_release_metadata() {
+    if [[ -r "${RELEASE_FILE}" ]]; then
+        ok "Release metadata is available"
+    else
+        warn "Release metadata file is missing"
+    fi
+}
+
+# -------------------------------------------------
+# systemd
+# -------------------------------------------------
+
+check_failed_services() {
+    local failed_count
+
+    if ! command -v systemctl >/dev/null 2>&1; then
+        warn "systemctl is not available"
+        return
+    fi
+
+    failed_count="$(
+        systemctl --failed --no-legend --plain 2>/dev/null |
+        grep -c . \
+        || true
+    )"
+
+    if [[ "${failed_count}" == "0" ]]; then
+        ok "No failed systemd services"
+    elif [[ "${failed_count}" =~ ^[0-9]+$ ]]; then
+        fail "${failed_count} failed systemd service(s)"
+    else
+        fail "Could not determine failed systemd services"
+    fi
+}
+
+# -------------------------------------------------
+# Main
+# -------------------------------------------------
+
+printf "${BOLD}Luckfox Health Check${RESET}\n"
+printf '%s\n' "========================================"
+printf '\n'
+
+check_rootfs_expanded
+check_swap
+check_memory
+check_rootfs_space
+check_persistent_mac
+check_network_interface
+check_ipv4_address
+check_release_metadata
+check_failed_services
+
+printf '\n'
+printf "${BOLD}Summary${RESET}\n"
+printf '%s\n' "----------------------------------------"
+printf "Warnings: %d\n" "${WARNINGS}"
+printf "Errors:   %d\n" "${ERRORS}"
+
+if (( ERRORS > 0 )); then
+    printf "${RED}${BOLD}Overall health: FAILED${RESET}\n"
+    exit 2
+fi
+
+if (( WARNINGS > 0 )); then
+    printf "${YELLOW}${BOLD}Overall health: WARNING${RESET}\n"
+    exit 1
+fi
+
+printf "${GREEN}${BOLD}Overall health: OK${RESET}\n"
+exit 0
