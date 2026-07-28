@@ -108,6 +108,12 @@ fi
 # ---------------------------------------------------------------------------
 # Projektinformationen im Zielsystem hinterlegen
 # ---------------------------------------------------------------------------
+PROJECT_BUILD_DATE="$(date +%F)"
+
+PROJECT_GIT_REVISION="$(
+    git -C "${PROJECT_DIR}" rev-parse --short HEAD 2>/dev/null \
+        || printf 'unknown'
+)"
 
 PROJECT_VERSION="$(
     tr -d '[:space:]' < "${VERSION_FILE}"
@@ -118,6 +124,8 @@ PROJECT_NAME="Luckfox Pico Plus Ubuntu"
 PROJECT_VERSION="${PROJECT_VERSION}"
 PROJECT_BOARD="${BOARD_NAME}"
 PROJECT_UBUNTU="${UBUNTU_RELEASE}"
+PROJECT_BUILD_DATE="${PROJECT_BUILD_DATE}"
+PROJECT_GIT_REVISION="${PROJECT_GIT_REVISION}"
 EOF_RELEASE
 
 chmod 0644 "${ROOTFS}/etc/luckfox-release"

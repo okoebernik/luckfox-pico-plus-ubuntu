@@ -44,6 +44,8 @@ unknown_if_empty() {
 PROJECT_NAME="Luckfox Pico Plus Ubuntu"
 PROJECT_VERSION="unknown"
 PROJECT_BOARD="Luckfox Pico Plus"
+PROJECT_BUILD_DATE="unknown"
+PROJECT_GIT_REVISION="unknown"
 
 if [[ -r "${RELEASE_FILE}" ]]; then
     # shellcheck disable=SC1090
@@ -52,6 +54,8 @@ if [[ -r "${RELEASE_FILE}" ]]; then
     PROJECT_NAME="${PROJECT_NAME:-Luckfox Pico Plus Ubuntu}"
     PROJECT_VERSION="${PROJECT_VERSION:-unknown}"
     PROJECT_BOARD="${PROJECT_BOARD:-Luckfox Pico Plus}"
+    PROJECT_BUILD_DATE="${PROJECT_BUILD_DATE:-unknown}"
+    PROJECT_GIT_REVISION="${PROJECT_GIT_REVISION:-unknown}"
 fi
 
 # -------------------------------------------------
@@ -86,25 +90,47 @@ if [[ -r /proc/device-tree/model ]]; then
     )"
 fi
 
-SOC_MODEL="$(
-    awk -F ': *' '
-        /^Hardware/ {
-            print $2
-            exit
-        }
-        /^model name/ {
-            model = $2
-        }
-        END {
-            if (model != "") {
-                print model
-            }
-        }
-    ' /proc/cpuinfo 2>/dev/null \
-    | head -n 1
+# -------------------------------------------------
+# SoC detection
+# -------------------------------------------------
+
+COMPATIBLE="$(
+    tr '\0' '\n' < /proc/device-tree/compatible 2>/dev/null \
+        || true
 )"
 
-SOC_MODEL="$(unknown_if_empty "${SOC_MODEL}")"
+case "${COMPATIBLE}" in
+    *rockchip,rv1103*)
+        SOC_MODEL="Rockchip RV1103"
+        ;;
+    *rockchip,rv1106*)
+        SOC_MODEL="Rockchip RV1106"
+        ;;
+    *rockchip,rk3506*)
+        SOC_MODEL="Rockchip RK3506"
+        ;;
+    *)
+        SOC_MODEL="$(
+            awk -F ': *' '
+                /^Hardware/ {
+                    print $2
+                    exit
+                }
+                /^model name/ {
+                    model = $2
+                }
+                END {
+                    if (model != "") {
+                        print model
+                    }
+                }
+            ' /proc/cpuinfo 2>/dev/null \
+            | head -n 1
+        )"
+
+        SOC_MODEL="$(unknown_if_empty "${SOC_MODEL}")"
+        ;;
+esac
 
 CPU_COUNT="$(
     getconf _NPROCESSORS_ONLN 2>/dev/null \
@@ -142,6 +168,14 @@ MEM_AVAILABLE="unknown"
 SWAP_TOTAL="unknown"
 SWAP_USED="unknown"
 
+# Determine whether swap is currently active.
+
+SWAP_STATUS="inactive"
+
+if swapon --noheadings --show=NAME 2>/dev/null | grep -q .; then
+    SWAP_STATUS="active"
+fi
+
 if command -v free >/dev/null 2>&1; then
     MEM_TOTAL="$(
         free -h | awk '/^Mem:/ {print $2}'
@@ -163,6 +197,14 @@ fi
 # -------------------------------------------------
 # Storage
 # -------------------------------------------------
+# Check whether the automatic first boot expansion has completed.
+
+ROOTFS_STATUS="pending"
+
+if [[ -f /var/lib/luckfox/rootfs-expanded ]]; then
+    ROOTFS_STATUS="expanded"
+fi
+
 
 ROOT_SOURCE="$(
     findmnt -n -o SOURCE / 2>/dev/null \
@@ -258,6 +300,9 @@ printf '%s\n' "========================================"
 section "System"
 
 value "Project version:" "${PROJECT_VERSION}"
+value "Git revision:" "${PROJECT_GIT_REVISION}"
+value "Build date:" "${PROJECT_BUILD_DATE}"
+
 value "Board:" "${BOARD_MODEL}"
 value "SoC:" "${SOC_MODEL}"
 value "Hostname:" "${HOSTNAME_VALUE}"
@@ -274,9 +319,11 @@ value "RAM total:" "${MEM_TOTAL}"
 value "RAM available:" "${MEM_AVAILABLE}"
 value "Swap total:" "${SWAP_TOTAL}"
 value "Swap used:" "${SWAP_USED}"
+value "Swap status:" "${SWAP_STATUS}"
 
 section "Storage"
 
+value "RootFS status:" "${ROOTFS_STATUS}"
 value "Root device:" "${ROOT_SOURCE}"
 value "Filesystem:" "${ROOT_FILESYSTEM}"
 value "Root size:" "${ROOT_SIZE}"
