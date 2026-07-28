@@ -115,6 +115,11 @@ if [[ -f "${ROOTFS}/etc/network/if-pre-up.d/luckfox-mac" ]]; then
     chown root:root "${ROOTFS}/etc/network/if-pre-up.d/luckfox-mac"
 fi
 
+if [[ -f "${ROOTFS}/usr/local/bin/luckfox-health" ]]; then
+    chmod 0755 "${ROOTFS}/usr/local/bin/luckfox-health"
+    chown root:root "${ROOTFS}/usr/local/bin/luckfox-health"
+fi
+
 # ---------------------------------------------------------------------------
 # Projektinformationen im Zielsystem hinterlegen
 # ---------------------------------------------------------------------------

@@ -246,6 +246,12 @@ These principles will continue to guide future development.
 - Fixed out-of-memory (OOM) condition during the first login.
 - Fixed root filesystem image initialization on freshly flashed systems.
 
+### Added
+
+- Added `luckfox-health` for automated system health checks.
+- Added checks for swap, memory, storage, persistent MAC, networking,
+  release metadata and failed systemd services.
+- Added machine-readable exit codes for automation and support workflows.
 
 
 For upcoming changes, see the **Project Roadmap** in:
