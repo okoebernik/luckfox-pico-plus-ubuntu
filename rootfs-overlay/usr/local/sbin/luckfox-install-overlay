@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+
+#
+# Luckfox Pico Plus Ubuntu
+#
+# Overlay Installer
+#
+# Installs a RootFS overlay into the running system.
+#
+
+set -euo pipefail
+
+SOURCE_DIR="${1:-}"
+
+log() { printf 'luckfox-install-overlay: %s\n' "$*"; }
+fail() { printf 'luckfox-install-overlay: ERROR: %s\n' "$*" >&2; exit 1; }
+
+[[ "$(id -u)" -eq 0 ]] || fail "This installer must run as root."
+[[ -n "${SOURCE_DIR}" ]] || fail "Missing overlay source directory."
+[[ -d "${SOURCE_DIR}" ]] || fail "Overlay source directory not found: ${SOURCE_DIR}"
+
+log "Installing files from ${SOURCE_DIR} ..."
+cp -a "${SOURCE_DIR}/." /
+
+log "Applying ownership and permissions ..."
+
+for directory in     /usr/local/bin     /usr/local/sbin     /etc/luckfox     /etc/network/if-pre-up.d     /etc/systemd/system
+do
+    if [[ -e "${directory}" ]]; then
+        chown -R root:root "${directory}"
+    fi
+done
+
+find /usr/local/bin /usr/local/sbin /etc/network/if-pre-up.d     -maxdepth 1 -type f -name 'luckfox-*' -exec chmod 0755 {} + 2>/dev/null || true
+
+find /etc/systemd/system     -type f -name 'luckfox-*.service' -exec chmod 0644 {} + 2>/dev/null || true
+
+if command -v systemctl >/dev/null 2>&1; then
+    log "Reloading systemd configuration ..."
+    systemctl daemon-reload
+fi
+
+log "Overlay installation completed."

@@ -253,6 +253,36 @@ These principles will continue to guide future development.
   release metadata and failed systemd services.
 - Added machine-readable exit codes for automation and support workflows.
 
+## Summary
+
+Adds a deployment utility for installing the RootFS overlay onto a running
+Luckfox Pico Plus without rebuilding the SD card image.
+
+### Added
+
+- deploy-overlay.sh
+- luckfox-install-overlay
+
+### Features
+
+- SSH connectivity check
+- Dry-run mode
+- Overlay deployment using tar over SSH
+- Automatic installation
+- Permission correction
+- systemd daemon reload
+
+### Removed dependency
+
+- rsync is no longer required on the target system.
+
+### Tested
+
+- Dry-run
+- Real deployment
+- Deployment over password-protected SSH
+- luckfox-info
+- luckfox-health
 
 For upcoming changes, see the **Project Roadmap** in:
 
