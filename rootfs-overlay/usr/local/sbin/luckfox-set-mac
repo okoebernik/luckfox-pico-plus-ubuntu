@@ -1,0 +1,92 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+INTERFACE="${1:-eth0}"
+STATE_DIR="/etc/luckfox"
+MAC_FILE="${STATE_DIR}/mac-address"
+
+log() {
+    printf 'luckfox-set-mac: %s\n' "$*"
+}
+
+fail() {
+    log "ERROR: $*"
+    exit 1
+}
+
+if [[ "$(id -u)" -ne 0 ]]; then
+    fail "This script must run as root."
+fi
+
+if [[ ! -d "/sys/class/net/${INTERFACE}" ]]; then
+    fail "Network interface not found: ${INTERFACE}"
+fi
+
+mkdir -p "${STATE_DIR}"
+
+# Allow a manually configured persistent MAC address.
+if [[ -r "${MAC_FILE}" ]]; then
+    MAC_ADDRESS="$(
+        tr '[:upper:]' '[:lower:]' < "${MAC_FILE}" |
+        tr -d '[:space:]'
+    )"
+
+    log "Using stored MAC address: ${MAC_ADDRESS}"
+else
+    SERIAL="$(
+        awk -F ': *' '
+            /^Serial/ {
+                print tolower($2)
+                exit
+            }
+        ' /proc/cpuinfo 2>/dev/null
+    )"
+
+    if [[ ! "${SERIAL}" =~ ^[0-9a-f]+$ ]]; then
+        fail "Could not determine a valid SoC serial number."
+    fi
+
+    if ! command -v sha256sum >/dev/null 2>&1; then
+        fail "sha256sum is not available."
+    fi
+
+    HASH="$(
+        printf '%s' "${SERIAL}" |
+        sha256sum |
+        awk '{print $1}'
+    )"
+
+    MAC_ADDRESS="$(
+        printf '02:%s:%s:%s:%s:%s' \
+            "${HASH:0:2}" \
+            "${HASH:2:2}" \
+            "${HASH:4:2}" \
+            "${HASH:6:2}" \
+            "${HASH:8:2}"
+    )"
+
+    printf '%s\n' "${MAC_ADDRESS}" > "${MAC_FILE}"
+    chmod 0644 "${MAC_FILE}"
+
+    log "Generated MAC address from SoC serial: ${MAC_ADDRESS}"
+fi
+
+if [[ ! "${MAC_ADDRESS}" =~ ^([0-9a-f]{2}:){5}[0-9a-f]{2}$ ]]; then
+    fail "Invalid MAC address: ${MAC_ADDRESS}"
+fi
+
+CURRENT_MAC="$(
+    tr '[:upper:]' '[:lower:]' \
+        < "/sys/class/net/${INTERFACE}/address"
+)"
+
+if [[ "${CURRENT_MAC}" == "${MAC_ADDRESS}" ]]; then
+    log "MAC address is already configured."
+    exit 0
+fi
+
+ip link set dev "${INTERFACE}" down
+ip link set dev "${INTERFACE}" address "${MAC_ADDRESS}"
+ip link set dev "${INTERFACE}" up
+
+log "MAC address configured on ${INTERFACE}: ${MAC_ADDRESS}"

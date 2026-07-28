@@ -132,6 +132,17 @@ case "${COMPATIBLE}" in
         ;;
 esac
 
+HARDWARE_SERIAL="$(
+    awk -F ': *' '
+        /^Serial/ {
+            print tolower($2)
+            exit
+        }
+    ' /proc/cpuinfo 2>/dev/null
+)"
+
+HARDWARE_SERIAL="${HARDWARE_SERIAL:-unknown}"
+
 CPU_COUNT="$(
     getconf _NPROCESSORS_ONLN 2>/dev/null \
     || grep -c '^processor' /proc/cpuinfo 2>/dev/null \
@@ -252,6 +263,9 @@ fi
 NETWORK_STATE="not available"
 IP_ADDRESS="not available"
 MAC_ADDRESS="not available"
+MAC_SOURCE="kernel/random"
+PERSISTENT_MAC_FILE="/etc/luckfox/mac-address"
+PERSISTENT_MAC=""
 
 if [[ -n "${NETWORK_INTERFACE}" ]]; then
     if [[ -r "/sys/class/net/${NETWORK_INTERFACE}/operstate" ]]; then
@@ -271,6 +285,23 @@ if [[ -n "${NETWORK_INTERFACE}" ]]; then
             2>/dev/null \
         || true
     )"
+
+if [[ -r "${PERSISTENT_MAC_FILE}" ]]; then
+    PERSISTENT_MAC="$(
+        tr '[:upper:]' '[:lower:]' < "${PERSISTENT_MAC_FILE}" \
+        | tr -d '[:space:]'
+    )"
+
+    if [[ "${PERSISTENT_MAC}" =~ ^([0-9a-f]{2}:){5}[0-9a-f]{2}$ ]]; then
+        if [[ "${MAC_ADDRESS}" == "${PERSISTENT_MAC}" ]]; then
+            MAC_SOURCE="SoC serial"
+        else
+            MAC_SOURCE="persistent file, not applied"
+        fi
+    else
+        MAC_SOURCE="invalid persistent file"
+    fi
+fi
 
     IP_ADDRESS="${IP_ADDRESS:-not assigned}"
     MAC_ADDRESS="${MAC_ADDRESS:-not available}"
@@ -305,6 +336,7 @@ value "Build date:" "${PROJECT_BUILD_DATE}"
 
 value "Board:" "${BOARD_MODEL}"
 value "SoC:" "${SOC_MODEL}"
+value "Hardware serial:" "${HARDWARE_SERIAL}"
 value "Hostname:" "${HOSTNAME_VALUE}"
 value "Operating system:" "${OS_NAME}"
 value "Kernel:" "${KERNEL_VERSION}"
@@ -337,6 +369,7 @@ value "Interface:" "${NETWORK_INTERFACE:-not available}"
 value "State:" "${NETWORK_STATE}"
 value "IPv4 address:" "${IP_ADDRESS}"
 value "MAC address:" "${MAC_ADDRESS}"
+value "MAC source:" "${MAC_SOURCE}"
 
 section "Health"
 

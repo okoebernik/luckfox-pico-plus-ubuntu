@@ -105,6 +105,16 @@ if [[ -f "${ROOTFS}/etc/systemd/system/luckfox-expand-rootfs.service" ]]; then
     chown root:root "${ROOTFS}/etc/systemd/system/luckfox-expand-rootfs.service"
 fi
 
+if [[ -f "${ROOTFS}/usr/local/sbin/luckfox-set-mac" ]]; then
+    chmod 0755 "${ROOTFS}/usr/local/sbin/luckfox-set-mac"
+    chown root:root "${ROOTFS}/usr/local/sbin/luckfox-set-mac"
+fi
+
+if [[ -f "${ROOTFS}/etc/network/if-pre-up.d/luckfox-mac" ]]; then
+    chmod 0755 "${ROOTFS}/etc/network/if-pre-up.d/luckfox-mac"
+    chown root:root "${ROOTFS}/etc/network/if-pre-up.d/luckfox-mac"
+fi
+
 # ---------------------------------------------------------------------------
 # Projektinformationen im Zielsystem hinterlegen
 # ---------------------------------------------------------------------------
