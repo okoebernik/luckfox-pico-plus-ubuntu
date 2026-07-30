@@ -174,15 +174,32 @@ cd luckfox-pico-plus-ubuntu
 
 ```bash
 ./scripts/clone-sdk.sh
+cd sdk
+./build.sh lunch
+# Select RV1103_Luckfox_Pico_Plus, then build the reference firmware:
+./build.sh
+cd ..
 ```
 
-### 4. Build the complete release
+### 4. Create the Ubuntu RootFS
+
+```bash
+sudo ./scripts/create-ubuntu-rootfs.sh
+```
+
+### 5. Check the build prerequisites
+
+```bash
+./scripts/check-build-environment.sh
+```
+
+### 6. Build the complete release
 
 ```bash
 ./scripts/build-all.sh
 ```
 
-### 5. Verify the generated files
+### 7. Verify the generated files
 
 ```bash
 cd output/release
@@ -213,9 +230,9 @@ The complete build is orchestrated by:
 ./scripts/build-all.sh
 ```
 
-The pipeline:
+After validating the prerequisites, the pipeline:
 
-1. optimizes the Ubuntu root filesystem,
+1. optimizes the Ubuntu root filesystem and adds swap,
 2. installs kernel modules,
 3. generates `rootfs.img`,
 4. collects the SDK firmware assets,

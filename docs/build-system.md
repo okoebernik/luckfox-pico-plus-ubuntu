@@ -148,10 +148,32 @@ The complete build is orchestrated by:
 
 ```bash
 ./scripts/build-all.sh
+```
+
+Before the first complete build, create the Ubuntu RootFS and build the
+reference firmware with the official SDK. The environment check at the start
+of `build-all.sh` verifies these prerequisites and stops with a precise list of
+missing inputs.
 
 ---
 
-# Step 1 – Optimize RootFS
+# Step 1 – Preserve Reference Firmware
+
+Script
+
+```text
+scripts/collect-reference-firmware.sh
+```
+
+Purpose
+
+- preserve the SDK-generated bootloader and environment images
+- provide the Buildroot reference files required by the flash-folder stage
+- keep `env.img` separate from the Ubuntu RootFS replacement
+
+---
+
+# Step 2 – Optimize RootFS
 
 Script
 
@@ -169,7 +191,7 @@ Purpose
 
 ---
 
-# Step 2 – Install Kernel Modules
+# Step 3 – Install Kernel Modules
 
 Script
 
@@ -202,7 +224,7 @@ lib/modules/
 
 ---
 
-# Step 3 – RootFS Image Generation
+# Step 4 – RootFS Image Generation
 
 The Ubuntu image generation process is illustrated below.
 
@@ -230,7 +252,7 @@ rootfs.img
 
 ---
 
-# Step 4 – Collect Firmware
+# Step 5 – Collect Firmware
 
 Script
 
@@ -264,7 +286,7 @@ output/firmware/
 
 ---
 
-# Step 5 – Flash Folder
+# Step 6 – Flash Folder
 
 Script
 

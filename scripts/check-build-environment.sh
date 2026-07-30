@@ -2,9 +2,7 @@
 set -uo pipefail
 
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-SDK_DIR="${PROJECT_DIR}/sdk"
-ROOTFS_DIR="${PROJECT_DIR}/rootfs"
-OUTPUT_DIR="${PROJECT_DIR}/output"
+CONFIG_FILE="${PROJECT_DIR}/config/project.env"
 VERSION_FILE="${PROJECT_DIR}/VERSION"
 
 MIN_FREE_SPACE_GB=15
@@ -51,6 +49,16 @@ command_exists() {
     command -v "$1" >/dev/null 2>&1
 }
 
+resolve_path() {
+    local path="$1"
+
+    if [[ "${path}" = /* ]]; then
+        printf '%s\n' "${path}"
+    else
+        printf '%s\n' "${PROJECT_DIR}/${path}"
+    fi
+}
+
 check_command() {
     local command_name="$1"
 
@@ -58,6 +66,17 @@ check_command() {
         ok "Command available: ${command_name}"
     else
         fail "Required command missing: ${command_name}"
+    fi
+}
+
+check_debian_package() {
+    local package_name="$1"
+
+    if command_exists dpkg && dpkg-query -W -f='${db:Status-Status}\n' \
+        "${package_name}" 2>/dev/null | grep -qx 'installed'; then
+        ok "Package installed: ${package_name}"
+    else
+        fail "Required package missing: ${package_name}"
     fi
 }
 
@@ -69,6 +88,17 @@ check_directory() {
         ok "${description}: ${directory}"
     else
         fail "${description} not found: ${directory}"
+    fi
+}
+
+check_file() {
+    local file="$1"
+    local description="$2"
+
+    if [[ -f "${file}" ]]; then
+        ok "${description}: ${file}"
+    else
+        fail "${description} not found: ${file}"
     fi
 }
 
@@ -101,6 +131,13 @@ section "Required commands"
 
 REQUIRED_COMMANDS=(
     bash
+    bc
+    cpio
+    dtc
+    g++
+    gawk
+    gcc
+    gperf
     git
     sudo
     rsync
@@ -108,9 +145,13 @@ REQUIRED_COMMANDS=(
     gzip
     dd
     truncate
+    make
+    mkswap
     mkfs.ext4
     e2fsck
     resize2fs
+    mountpoint
+    makeinfo
     sha256sum
 )
 
@@ -118,7 +159,26 @@ for command_name in "${REQUIRED_COMMANDS[@]}"; do
     check_command "${command_name}"
 done
 
+section "Required host packages"
+
+REQUIRED_PACKAGES=(
+    gcc-multilib
+    g++-multilib
+)
+
+for package_name in "${REQUIRED_PACKAGES[@]}"; do
+    check_debian_package "${package_name}"
+done
+
 section "Project files"
+
+if [[ -r "${CONFIG_FILE}" ]]; then
+    # shellcheck disable=SC1090
+    source "${CONFIG_FILE}"
+    ok "Project configuration: ${CONFIG_FILE}"
+else
+    fail "Project configuration not found: ${CONFIG_FILE}"
+fi
 
 if [[ -f "${VERSION_FILE}" ]]; then
     PROJECT_VERSION="$(tr -d '[:space:]' < "${VERSION_FILE}")"
@@ -132,8 +192,24 @@ else
     fail "VERSION file not found: ${VERSION_FILE}"
 fi
 
-check_directory "${SDK_DIR}" "SDK directory"
-check_directory "${ROOTFS_DIR}" "RootFS directory"
+SDK_PATH="$(resolve_path "${SDK_DIR:-sdk}")"
+ROOTFS_PATH="$(resolve_path "${ROOTFS_DIR:-rootfs/ubuntu-jammy}")"
+SDK_IMAGE_PATH="$(resolve_path "${SDK_IMAGE_DIR:-sdk/output/image}")"
+KERNEL_OUT_PATH="$(resolve_path "${KERNEL_OUT_DIR:-sdk/sysdrv/source/objs_kernel}")"
+KERNEL_MODULE_PATH="$(resolve_path "${KERNEL_MODULE_SOURCE:-sdk/sysdrv/out/kernel_drv_ko}")"
+OUTPUT_PATH="$(resolve_path "${OUTPUT_DIR:-output}")"
+
+check_directory "${SDK_PATH}" "SDK directory"
+check_directory "${ROOTFS_PATH}" "Ubuntu RootFS directory"
+check_directory "${SDK_IMAGE_PATH}" "SDK firmware image directory"
+check_directory "${KERNEL_OUT_PATH}" "Kernel build output"
+check_directory "${KERNEL_MODULE_PATH}" "Kernel module output"
+
+for firmware_file in boot.img download.bin idblock.img uboot.img userdata.img; do
+    check_file \
+        "${SDK_IMAGE_PATH}/${firmware_file}" \
+        "SDK firmware image ${firmware_file}"
+done
 
 if [[ -x "${PROJECT_DIR}/scripts/build-all.sh" ]]; then
     ok "Main build script is executable"
@@ -143,7 +219,7 @@ fi
 
 section "Filesystem and permissions"
 
-mkdir -p "${OUTPUT_DIR}" 2>/dev/null || true
+mkdir -p "${OUTPUT_PATH}" 2>/dev/null || true
 
 if [[ -w "${PROJECT_DIR}" ]]; then
     ok "Project directory is writable"
@@ -151,7 +227,7 @@ else
     fail "Project directory is not writable"
 fi
 
-if [[ -w "${OUTPUT_DIR}" ]]; then
+if [[ -w "${OUTPUT_PATH}" ]]; then
     ok "Output directory is writable"
 else
     fail "Output directory is not writable"

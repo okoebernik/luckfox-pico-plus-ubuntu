@@ -33,6 +33,8 @@ version: v0.1.0
 - [Clone the Repository](#clone-the-repository)
 - [Install the Build Environment](#install-the-build-environment)
 - [Download the SDK](#download-the-official-luckfox-sdk)
+- [Create the Ubuntu RootFS](#create-the-ubuntu-rootfs)
+- [Verify the Build Prerequisites](#verify-the-build-prerequisites)
 - [Build Ubuntu](#build-ubuntu)
 - [Build Output](#build-output)
 - [Flash the SD Card](#flash-the-sd-card)
@@ -176,11 +178,40 @@ Choose:
 
 Use the microSD-card Buildroot configuration as the reference board configuration.
 
-Return to the project root:
+Build the reference firmware. This creates the kernel, modules, bootloader and
+firmware images that are combined with Ubuntu later:
 
 ```bash
+./build.sh
 cd ..
 ```
+
+---
+
+## Create the Ubuntu RootFS
+
+Generate the minimal Ubuntu 22.04 ARMHF filesystem:
+
+```bash
+sudo ./scripts/create-ubuntu-rootfs.sh
+```
+
+This step downloads Ubuntu packages and creates
+`rootfs/ubuntu-jammy/`. It only needs to be repeated when you want to recreate
+the userspace from scratch.
+
+---
+
+## Verify the Build Prerequisites
+
+Run the same prerequisite check used by the complete build:
+
+```bash
+./scripts/check-build-environment.sh
+```
+
+Resolve every `[FAIL]` result before continuing. Warnings identify supported
+but non-recommended conditions, such as a host version other than Ubuntu 22.04.
 
 ---
 
@@ -192,15 +223,15 @@ Generate the complete Ubuntu firmware release:
 ./scripts/build-all.sh
 ```
 
-The pipeline performs the following stages:
+After checking the build environment, the pipeline performs the following
+stages:
 
-1. Optimize the Ubuntu root filesystem
+1. Optimize the Ubuntu root filesystem and add the 512 MB swapfile
 2. Integrate Luckfox kernel modules
 3. Create the ext4 `rootfs.img`
-4. Add the 512 MB swapfile
-5. Collect firmware images
-6. Create the SDTool-compatible release directory
-7. Generate release metadata and SHA-256 checksums
+4. Collect firmware images
+5. Create the SocToolKit-compatible release directory
+6. Generate release metadata and SHA-256 checksums
 
 For technical details, see [Build System](build-system.md).
 

@@ -1,0 +1,83 @@
+name: Firmware build
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - develop
+    paths:
+      - .github/workflows/firmware-build.yml
+      - VERSION
+      - config/**
+      - rootfs-overlay/**
+      - scripts/**
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Luckfox Pico Plus Ubuntu image
+    runs-on: ubuntu-22.04
+    timeout-minutes: 300
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7.0.1
+
+      - name: Free build disk space
+        run: |
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          df -h /
+
+      - name: Install build dependencies
+        run: ./scripts/setup-wsl.sh
+
+      - name: Clone and configure official Luckfox SDK
+        run: |
+          ./scripts/clone-sdk.sh
+          ln -rfs \
+            sdk/project/cfg/BoardConfig_IPC/BoardConfig-SD_CARD-Buildroot-RV1103_Luckfox_Pico_Plus-IPC.mk \
+            sdk/.BoardConfig.mk
+          grep -E 'LF_ORIGIN_BOARD_CONFIG|RK_BOOT_MEDIUM|LF_TARGET_ROOTFS' \
+            sdk/.BoardConfig.mk
+
+      - name: Build reference firmware
+        working-directory: sdk
+        run: ./build.sh
+
+      - name: Create Ubuntu Jammy ARMHF RootFS
+        run: sudo ./scripts/create-ubuntu-rootfs.sh
+
+      - name: Verify build prerequisites
+        run: ./scripts/check-build-environment.sh
+
+      - name: Build release images
+        run: ./scripts/build-all.sh
+
+      - name: Verify release checksums
+        working-directory: output/release
+        run: sha256sum -c SHA256SUMS
+
+      - name: Package test build
+        id: package
+        run: |
+          version="$(tr -d '[:space:]' < VERSION)"
+          archive="luckfox-pico-plus-ubuntu-${version}-${GITHUB_SHA::7}.tar.gz"
+          tar -C output/release -czf "${archive}" .
+          sha256sum "${archive}" > "${archive}.sha256"
+          printf 'archive=%s\n' "${archive}" >> "${GITHUB_OUTPUT}"
+          ls -lh "${archive}" "${archive}.sha256"
+
+      - name: Upload test build
+        uses: actions/upload-artifact@v6.0.0
+        with:
+          name: luckfox-pico-plus-ubuntu-test-build
+          path: |
+            ${{ steps.package.outputs.archive }}
+            ${{ steps.package.outputs.archive }}.sha256
+          if-no-files-found: error
+          retention-days: 14
+          compression-level: 0

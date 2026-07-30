@@ -81,29 +81,28 @@ if [[ -r /etc/os-release ]]; then
 fi
 
 KERNEL_VERSION="unknown"
+KERNEL_OUT="$(resolve_path "${KERNEL_OUT_DIR}")"
+ROOTFS_MODULES="$(resolve_path "${ROOTFS_DIR}")/lib/modules"
+KERNEL_RELEASE_FILE="${KERNEL_OUT}/include/config/kernel.release"
 
-if [[ -d "${KERNEL_OUT_DIR}" ]]; then
+if [[ -r "${KERNEL_RELEASE_FILE}" ]]; then
     KERNEL_VERSION="$(
-        find "${KERNEL_OUT_DIR}" \
-            -type d \
-            -path '*/lib/modules/*' \
-            -printf '%f\n' \
-            2>/dev/null \
-            | sort -V \
-            | tail -n 1
+        head -n 1 "${KERNEL_RELEASE_FILE}" \
+            | tr -d '[:space:]'
     )"
 fi
 
 if [[ -z "${KERNEL_VERSION}" || "${KERNEL_VERSION}" == "unknown" ]]; then
     KERNEL_VERSION="$(
-        find "$(resolve_path "${ROOTFS_DIR}")/lib/modules" \
+        find "${ROOTFS_MODULES}" \
             -mindepth 1 \
             -maxdepth 1 \
             -type d \
             -printf '%f\n' \
             2>/dev/null \
             | sort -V \
-            | tail -n 1
+            | tail -n 1 \
+            || true
     )"
 fi
 
@@ -219,3 +218,12 @@ Verify all release images with:
 
 ```bash
 sha256sum -c SHA256SUMS
+```
+
+Every listed image must report `OK`.
+EOF_REPORT
+
+echo "Release-Metadaten erzeugt:"
+cat "${RELEASE}/manifest.txt"
+echo
+echo "Build-Report: ${RELEASE}/build-report.md"

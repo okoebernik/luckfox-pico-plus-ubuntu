@@ -219,6 +219,7 @@ clone-sdk.sh
 optimize-rootfs.sh
 install-kernel-modules.sh
 create-rootfs-image.sh
+collect-reference-firmware.sh
 collect-firmware.sh
 create-flash-folder.sh
 create-release-metadata.sh
@@ -309,6 +310,7 @@ set -o pipefail
 During development, stages can be executed separately:
 
 ```bash
+./scripts/collect-reference-firmware.sh
 sudo ./scripts/optimize-rootfs.sh
 sudo ./scripts/install-kernel-modules.sh
 sudo ./scripts/create-rootfs-image.sh
@@ -537,19 +539,15 @@ Testing is performed in layers.
 
 ### 1. Static Checks
 
-Shell syntax:
+Run the complete repository check:
 
 ```bash
-bash -n scripts/*.sh
+./scripts/check-repository.sh
 ```
 
-Executable permissions:
-
-```bash
-find scripts -maxdepth 1 -type f -name '*.sh' -printf '%M %p\n'
-```
-
-Markdown links and SVG paths should be checked before committing.
+It verifies shell syntax and executable permissions, local Markdown and image
+links, closed Markdown code fences and valid SVG XML. The same command runs
+automatically for pull requests and pushes to `develop` or `main`.
 
 ### 2. Clean Build
 
@@ -983,4 +981,4 @@ sudo journalctl -u ssh -b --no-pager
 
 | Previous | Home | Next |
 |-----------|------|------|
-| [← Troubleshooting](troubleshooting.md) | [README](../README.md) | [Project Roadmap →](project-roadmap.m) |
+| [← Troubleshooting](troubleshooting.md) | [README](../README.md) | [Project Roadmap →](project-roadmap.md) |
