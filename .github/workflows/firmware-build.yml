@@ -38,7 +38,7 @@ jobs:
       - name: Clone and configure official Luckfox SDK
         run: |
           ./scripts/clone-sdk.sh
-          cp \
+          ln -rfs \
             sdk/project/cfg/BoardConfig_IPC/BoardConfig-SD_CARD-Buildroot-RV1103_Luckfox_Pico_Plus-IPC.mk \
             sdk/.BoardConfig.mk
           grep -E 'LF_ORIGIN_BOARD_CONFIG|RK_BOOT_MEDIUM|LF_TARGET_ROOTFS' \
