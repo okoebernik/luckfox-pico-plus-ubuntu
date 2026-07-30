@@ -219,6 +219,7 @@ clone-sdk.sh
 optimize-rootfs.sh
 install-kernel-modules.sh
 create-rootfs-image.sh
+collect-reference-firmware.sh
 collect-firmware.sh
 create-flash-folder.sh
 create-release-metadata.sh
@@ -309,6 +310,7 @@ set -o pipefail
 During development, stages can be executed separately:
 
 ```bash
+./scripts/collect-reference-firmware.sh
 sudo ./scripts/optimize-rootfs.sh
 sudo ./scripts/install-kernel-modules.sh
 sudo ./scripts/create-rootfs-image.sh
