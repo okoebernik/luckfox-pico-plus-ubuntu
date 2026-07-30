@@ -148,6 +148,12 @@ The complete build is orchestrated by:
 
 ```bash
 ./scripts/build-all.sh
+```
+
+Before the first complete build, create the Ubuntu RootFS and build the
+reference firmware with the official SDK. The environment check at the start
+of `build-all.sh` verifies these prerequisites and stops with a precise list of
+missing inputs.
 
 ---
 

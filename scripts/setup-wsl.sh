@@ -23,15 +23,21 @@ sudo apt-get install -y \
   unzip \
   gperf \
   autoconf \
+  debootstrap \
   device-tree-compiler \
+  e2fsprogs \
   libncurses5-dev \
   pkg-config \
   bc \
+  parted \
   python-is-python3 \
+  qemu-user-static \
   passwd \
   openssl \
   openssh-server \
   openssh-client \
+  curl \
+  wget \
   vim \
   file \
   cpio \
