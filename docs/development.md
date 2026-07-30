@@ -537,19 +537,15 @@ Testing is performed in layers.
 
 ### 1. Static Checks
 
-Shell syntax:
+Run the complete repository check:
 
 ```bash
-bash -n scripts/*.sh
+./scripts/check-repository.sh
 ```
 
-Executable permissions:
-
-```bash
-find scripts -maxdepth 1 -type f -name '*.sh' -printf '%M %p\n'
-```
-
-Markdown links and SVG paths should be checked before committing.
+It verifies shell syntax and executable permissions, local Markdown and image
+links, closed Markdown code fences and valid SVG XML. The same command runs
+automatically for pull requests and pushes to `develop` or `main`.
 
 ### 2. Clean Build
 
