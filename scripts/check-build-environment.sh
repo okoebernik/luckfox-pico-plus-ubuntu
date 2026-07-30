@@ -69,6 +69,17 @@ check_command() {
     fi
 }
 
+check_debian_package() {
+    local package_name="$1"
+
+    if command_exists dpkg && dpkg-query -W -f='${db:Status-Status}\n' \
+        "${package_name}" 2>/dev/null | grep -qx 'installed'; then
+        ok "Package installed: ${package_name}"
+    else
+        fail "Required package missing: ${package_name}"
+    fi
+}
+
 check_directory() {
     local directory="$1"
     local description="$2"
@@ -120,6 +131,13 @@ section "Required commands"
 
 REQUIRED_COMMANDS=(
     bash
+    bc
+    cpio
+    dtc
+    g++
+    gawk
+    gcc
+    gperf
     git
     sudo
     rsync
@@ -133,11 +151,23 @@ REQUIRED_COMMANDS=(
     e2fsck
     resize2fs
     mountpoint
+    makeinfo
     sha256sum
 )
 
 for command_name in "${REQUIRED_COMMANDS[@]}"; do
     check_command "${command_name}"
+done
+
+section "Required host packages"
+
+REQUIRED_PACKAGES=(
+    gcc-multilib
+    g++-multilib
+)
+
+for package_name in "${REQUIRED_PACKAGES[@]}"; do
+    check_debian_package "${package_name}"
 done
 
 section "Project files"
