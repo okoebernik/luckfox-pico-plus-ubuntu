@@ -83,17 +83,12 @@ fi
 KERNEL_VERSION="unknown"
 KERNEL_OUT="$(resolve_path "${KERNEL_OUT_DIR}")"
 ROOTFS_MODULES="$(resolve_path "${ROOTFS_DIR}")/lib/modules"
+KERNEL_RELEASE_FILE="${KERNEL_OUT}/include/config/kernel.release"
 
-if [[ -d "${KERNEL_OUT}" ]]; then
+if [[ -r "${KERNEL_RELEASE_FILE}" ]]; then
     KERNEL_VERSION="$(
-        find "${KERNEL_OUT}" \
-            -type d \
-            -path '*/lib/modules/*' \
-            -printf '%f\n' \
-            2>/dev/null \
-            | sort -V \
-            | tail -n 1 \
-            || true
+        head -n 1 "${KERNEL_RELEASE_FILE}" \
+            | tr -d '[:space:]'
     )"
 fi
 
